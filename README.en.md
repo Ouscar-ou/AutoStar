@@ -2,22 +2,25 @@
 
 English | [中文](README.md)
 
-AutoStar is a public-preview workflow package for STAR-CCM+ propeller open-water CFD. The current preview focuses on safe workflow validation and exposes only the `quick` / `coarse` mesh presets for STEP/CAD checks, direction checks, MRF/domain checks, 400-step pilot screening, and basic report interpretation.
+AutoStar is a conversational workflow for Siemens STAR-CCM+ propeller open-water CFD. The current preview provides the `quick` and `coarse` mesh presets for STEP/STP geometry checks, physical-direction confirmation, workflow validation, 400-step pilot screening, basic result interpretation, and cloud-image export.
 
-> Important: this project does not include STAR-CCM+ itself, does not provide a STAR-CCM+ license, and does not bypass any commercial software licensing. Use your own properly licensed Siemens STAR-CCM+ installation.
+> AutoStar does not include STAR-CCM+ software or a STAR-CCM+ license. Users need their own properly licensed and runnable Siemens STAR-CCM+ installation.
 
-## Installation Guide
+## Getting Started
 
-Start here for first-time setup: [`INSTALL.md`](INSTALL.md)
+- English installation guide: [`INSTALL.md`](INSTALL.md)
+- Codex chat test: [`examples/codex_chat_test.en.md`](examples/codex_chat_test.en.md)
+- 中文说明：[`README.md`](README.md)
 
-For chat-based testing through Codex, see: [`examples/codex_chat_test.en.md`](examples/codex_chat_test.en.md)
+Using Codex for installation is recommended. Before installation, Codex should ask where to place the skill, whether to create a local Python environment, and where CFD cases should be stored. It should not modify global Python, PATH, or the STAR-CCM+ installation directory by default.
 
-Recommended installation flow:
+```text
+Install the AutoStar preview from https://github.com/Ouscar-ou/AutoStar.
+Before installation, ask me for the skill folder, whether to create a local .venv, and the case workspace.
+Do not modify global Python, PATH, or the STAR-CCM+ installation directory. Check the environment and STAR-CCM+ version after installation.
+```
 
-1. Choose the package source: GitHub URL, local release ZIP, or an already extracted/cloned local folder.
-2. Put AutoStar in a local skill folder you choose, for example `C:/Users/<your-user-name>/.codex/skills/autostar`.
-3. Do not modify global Python, Conda, PATH, or the STAR-CCM+ installation directory by default.
-4. Run environment checks from the installation folder:
+After installation, run these commands from the AutoStar folder:
 
 ```powershell
 python ./starccm_cli.py integrity-check
@@ -25,308 +28,110 @@ python ./starccm_cli.py version
 python ./tests/verify_public_preview_package.py
 ```
 
-After verification passes, open a new Codex task/window, or restart Codex, so it can rescan `.codex/skills`. You can then use AutoStar through normal Codex chat.
+`integrity-check` confirms that the installation is complete, while `version` checks Python and STAR-CCM+ discovery. When both checks pass, open a new Codex task or restart Codex, then use AutoStar through normal chat.
 
-If you ask Codex to install it for you, use wording like:
+## Preview
 
-```text
-Install the AutoStar preview from https://github.com/Ouscar-ou/AutoStar. Before installing, ask me where to place the skill, whether to create a local .venv, and where to put case outputs. Do not modify global Python, PATH, or the STAR-CCM+ installation directory. Run version after installation.
-```
-
-If network access or repository visibility is inconvenient, download the release ZIP first and give Codex the local ZIP path.
-
-## Preview Images
-
-The image below shows a postprocessing example from an open-water propeller case, including pressure clouds, y+ clouds, center-plane velocity/pressure, and mesh-section views. It demonstrates the report/postprocessing style of the current preview and is not a formal engineering conclusion.
+The image below shows postprocessing from an open-water propeller case, including pressure clouds, y+ clouds, center-plane velocity/pressure, and mesh sections. It demonstrates the current reporting style and is not a formal engineering conclusion.
 
 ![Propeller CFD result clouds preview](docs/assets/result_clouds_preview.png)
 
-## What This Is
+## Current Capabilities
 
-AutoStar provides a structured STAR-CCM+ propeller open-water CFD workflow. It helps make preprocessing, direction definitions, short-run stability checks, and basic reporting more repeatable.
+The current version can help users:
 
-The current preview includes:
+- Inspect STEP/STP files, units, bounding boxes, shaft alignment, and obvious geometry risks.
+- Confirm shaft axis, flow direction, inlet/outlet sides, and rotation vector as separate physical inputs.
+- Check the local STAR-CCM+ environment and produce a preflight assessment before calculation.
+- Use `quick` or `coarse` meshes for workflow validation and preliminary CFD screening.
+- Run a 400-step pilot after user confirmation and assess residuals, thrust, torque, stability, and y+.
+- Produce `preflight_report.md`, `run_report.md`, and JSON diagnostics.
+- Export four-view surface pressure/y+ images, center-plane pressure/velocity, mesh sections, and report contact sheets from solved cases.
 
-- STEP/STP geometry checks.
-- Propeller shaft axis, flow direction, rotation vector, and inlet/outlet-side confirmation.
-- STAR-CCM+ environment checks and preflight.
-- `quick` / `coarse` mesh workflow validation.
-- 400-step pilot stability screening.
-- y+, residual, thrust, torque, and basic report interpretation.
-- Basic cloud/section image export from an existing `.sim` file.
-- Codex chat-based test prompts: `examples/codex_chat_test.en.md`.
+AutoStar will continue to expand toward engineering applications. Higher-density engineering meshes, grid-independence assessment, batch operating-point analysis, automated design iteration, and deeper diagnostics and reporting will be introduced progressively after validation. Feature availability and intended use will follow each release note.
 
-It is not a final engineering-decision tool and is not a publication-grade CFD generator. The current version is best used for workflow validation, education, direction checks, and initial CAD/mesh-risk screening.
+## Chat-Based Use
 
-## Current Scope
+Users do not need to write a complete `case.yaml` before starting. Provide a STEP/STP path and the test objective. AutoStar first checks the environment and geometry, then asks for missing information one item at a time. If dimensions, directions, or operating conditions are unclear, it should explain and ask rather than guess and launch a run.
 
-Available in the current preview:
+Copy this prompt to start a first case:
 
-- Mesh presets: `quick`, `coarse`.
-- Workflow: environment check, STEP rough check, preflight, basic mesh/solver workflow, 400-step pilot.
-- Postprocessing: pressure/y+ four-view surface images, center-plane pressure/velocity images, mesh-section images, and contact sheets from an existing `.sim` file.
-- Reports: `preflight_report.md`, `run_report.md`, and JSON diagnostic files.
+```text
+Use AutoStar to check this propeller STEP file:
+STEP=your STEP/STP file path
+Goal=workflow validation/preliminary screening
 
-Not included in the current preview:
-
-- High-density engineering mesh templates.
-- Formal automatic grid-independence/GCI conclusions.
-- Batch optimization, automatic design iteration, or advanced repair chains.
-- Private STAR-CCM+ macro/template source code.
-- Siemens STAR-CCM+ software or licensing.
-
-## Core Integrity And Local Extensions
-
-AutoStar `v0.3.2` uses a strict-core/open-extension integrity model. Do not modify core files. If any file below changes, AutoStar treats the official core as untrusted and stops formal commands with exit code `78`:
-
-- `bin/starccm_engine.exe`
-- `starccm_cli.py`
-- `public/engine_client.py`
-- `AI_USAGE_POLICY.md`
-- `LICENSE`
-
-README, INSTALL, examples, ordinary docs, and `SKILL.md` are advisory files. Local changes do not stop execution, but `integrity-check` reports warnings and the source label becomes `official core verified with local warnings`. Do not edit core files to add features, and do not present a locally modified package as an unchanged official Release.
-
-All custom extensions must be placed in one of these directories. Do not scatter extension scripts in the AutoStar root, `bin/`, or `public/`:
-
-- `extensions/`: independent scripts, adapters, external-tool wrappers, and integration code.
-- `workflows/`: local Markdown/YAML/JSON workflow definitions and agent instructions.
-- `templates/local/`: local case, input, and report templates; never store private keys, tokens, confidential geometry, or STAR-CCM+ licensing material here.
-
-New files under these roots are outside mandatory official-core hashing. AutoStar continues to run and reports `official core + user extensions`. AutoStar does not automatically execute user scripts; the user or agent must review them and obtain explicit execution approval. Extensions cannot unlock unavailable meshes, replace the engine, bypass preflight, or remove the quick/coarse boundary.
-
-Use these commands for normal runtime verification:
-
-```powershell
-python ./starccm_cli.py integrity-check
-python ./starccm_cli.py version
+First check my STAR-CCM+ environment and geometry. Then ask me, one item at a time, for the operating conditions, directions, mesh, and compute resources that still need confirmation.
+Summarize the shaft axis, flow direction, inlet/outlet sides, and rotation vector and perform a consistency check. Do not start meshing or solving without my confirmation.
 ```
 
-`tests/verify_public_preview_package.py` verifies that an official Release is byte-for-byte complete. After adding user extensions, this strict package test intentionally reports a package mismatch; that does not mean the official core has failed.
+AutoStar normally asks for:
 
-Feedback for maintainers may cover installation and compatibility, direction semantics, STEP import, preflight, quick/coarse mesh behavior, solver stability, reports and cloud images, extension-interface requests, and reproducible documentation defects. Include `version` and `integrity-check` output, STAR-CCM+/Windows versions, a sanitized case, relevant logs, and minimal reproduction steps. Never publish private STEP files, `.sim` files, license material, tokens, or confidential project data.
+- Physical propeller diameter D and axial length L.
+- Positive inflow-speed magnitude, actual flow direction, and inlet/outlet sides.
+- Positive rpm magnitude and the angular-velocity vector defined by the right-hand rule.
+- Water density, viscosity, and turbulence model.
+- `quick` or `coarse` mesh, a 400-step pilot, and the parallel-core count.
+- Case workspace, output location, and confirmation for the current run.
+
+If a parameter is unknown, answer: "Unknown; estimate it from the STEP file first and identify the risk." AutoStar keeps estimated values distinct from confirmed inputs and does not treat a bounding-box dimension as final physical truth.
+
+## What Users Receive
+
+A standard preview run normally produces:
+
+1. Environment and STAR-CCM+ version checks.
+2. STEP/STP geometry and direction-risk notes.
+3. A confirmed operating-condition summary and preflight report.
+4. Mesh-generation status and 400-step pilot results.
+5. Plain-language interpretation of residuals, thrust, torque, stability, and y+.
+6. A usability level, known risks, and recommended next actions.
+7. Pressure, y+, section, and mesh images when a solved case is available.
+
+The 400-step pilot is primarily a direction, mesh, and obvious-divergence screen. The user decides whether to continue for more steps, revise the setup, or request additional postprocessing after reviewing the intermediate result.
+
+## Direction Inputs
+
+A propeller case needs these inputs separately; a single ambiguous `axis=X` is not enough:
+
+- `shaft_axis`: the geometric shaft axis, such as X, Y, or Z.
+- `flow_direction`: the actual water-flow direction, such as `-X`.
+- `inlet_side` / `outlet_side`: which axial sides contain the inlet and outlet.
+- `rotation_vector`: angular-velocity vector direction by the right-hand rule, such as `+X`.
+- `velocity` / `rpm`: positive magnitudes only; directions are stated separately.
+
+AutoStar checks these inputs for consistency and uses them to arrange the inlet/outlet sides of the domain, MRF region, and local refinements.
 
 ## Requirements
 
 - Windows 10/11.
 - Python 3.10+.
 - A locally installed and runnable Siemens STAR-CCM+ installation.
-- A valid Siemens STAR-CCM+ license, provided by the user or organization.
-- STEP/STP propeller geometry.
-- Confirmed physical conditions: diameter D, axial length L, inflow speed, rpm, flow direction, rotation vector, fluid properties, and related inputs.
+- A valid Siemens STAR-CCM+ license supplied by the user or organization.
+- STEP/STP propeller geometry and confirmable operating conditions.
 
-## STAR-CCM+ Version
+The current validated environment is Windows, Python 3.13, and STAR-CCM+ `18.04.008-R8`. Start with STAR-CCM+ `18.04+` in the same family or a newer release. Major STAR-CCM+ versions may differ in Java APIs, field-function names, or scene export, so run `version` before first use.
 
-Current local validation environment:
+## Local Extensions
 
-- STAR-CCM+ `18.04.008-R8`
-- Windows
-- Python 3.13 local runtime
+For easier upgrades and support, do not directly modify or replace official program files in the AutoStar installation. Put custom content in the designated folders:
 
-STAR-CCM+ `18.04+` or newer versions are recommended for testing. Different major STAR-CCM+ versions may differ in Java APIs, macro interfaces, field-function names, or scene export behavior. Always start with:
+- `extensions/`: independent scripts, adapters, and external-tool integrations.
+- `workflows/`: local workflow instructions and definitions.
+- `templates/local/`: local case, input, and report templates.
 
-```powershell
-python ./starccm_cli.py version
-```
+Back up these three folders before upgrading and restore custom content to the corresponding folders after installing the new version. Feature requests, compatibility issues, and reproducible defects can be reported through GitHub Issues.
 
-If you use another STAR-CCM+ version, verify the STAR-CCM+ path and version in the `version` output. For compatibility issues, include the `version` output, STAR-CCM+ version, and error log in your issue.
+## Intended Use
 
-## Installation Philosophy
+Current `quick` / `coarse` results are intended for workflow validation, education, demonstrations, and preliminary screening. They should not be treated directly as formal engineering certification, class approval, or publication-ready final CFD. Users remain responsible for assessing mesh density, convergence, physical models, and experimental agreement before relying on results.
 
-To avoid disturbing the user's local environment, AutoStar recommends local environments, local run folders, and explicit path confirmation.
+See [`LICENSE`](LICENSE) and [`LICENSE.md`](LICENSE.md) for the complete terms.
 
-Before installation or configuration, confirm:
+STAR-CCM+ is a Siemens commercial software product and trademark. AutoStar is not an official Siemens product, does not include STAR-CCM+ software or licensing, and does not replace Siemens licensing requirements.
 
-1. `skill_install_dir`: the skill installation folder.
-2. `local_python_env_dir`: optional local Python `.venv` folder.
-3. `case_workspace_dir`: CFD case and output workspace.
+## Feedback
 
-Recommended layout:
+Use [GitHub Issues](https://github.com/Ouscar-ou/AutoStar/issues) for general feedback. Include the STAR-CCM+ and Windows versions, `version` output, sanitized operating conditions, relevant reports, and key error logs when possible.
 
-```text
-Skill install folder:
-C:/Users/<your-user-name>/.codex/skills/autostar
-
-Local Python environment folder:
-C:/Users/<your-user-name>/Documents/autostar_env/.venv
-
-Case workspace folder:
-C:/Users/<your-user-name>/Documents/autostar_runs
-```
-
-By default, do not:
-
-- Modify global Python or Conda.
-- Modify system PATH.
-- Write permanent environment variables.
-- Modify the STAR-CCM+ installation directory.
-- Run `pip install` or upgrade pip unless explicitly needed and confirmed.
-
-See `INSTALL.md` for detailed installation steps.
-
-## Quick Start
-
-Run inside the skill folder:
-
-```powershell
-python ./starccm_cli.py version
-python ./tests/verify_public_preview_package.py
-```
-
-If using a local `.venv`:
-
-```powershell
-python -m venv C:/Users/<your-user-name>/Documents/autostar_env/.venv
-& C:/Users/<your-user-name>/Documents/autostar_env/.venv/Scripts/python.exe ./starccm_cli.py version
-```
-
-Copy the example case:
-
-```powershell
-mkdir C:/runs/case1
-copy ./examples/preview_quick_case.yaml C:/runs/case1/case.yaml
-```
-
-Run preflight:
-
-```powershell
-python ./starccm_cli.py --project-dir C:/runs/case1 workflow preflight --case C:/runs/case1/case.yaml
-```
-
-Only start the workflow after preflight is acceptable, direction semantics are clear, and the user confirms the run:
-
-```powershell
-python ./starccm_cli.py --project-dir C:/runs/case1 workflow run --case C:/runs/case1/case.yaml
-```
-
-## Input Template
-
-Confirm these inputs before preflight:
-
-```text
-STEP=your STEP/STP file path
-run_intent=screening
-mesh=quick or coarse
-D=propeller diameter, e.g. 250 mm
-L=axial propeller length, e.g. 53 mm
-velocity=positive inflow speed magnitude, e.g. 3.0 m/s
-rpm=positive rotation speed magnitude, e.g. 900 rpm
-fluid=Water
-density=998.2 kg/m3
-dynamic viscosity=0.001003 Pa*s
-turbulence=K-Omega-SST
-shaft_axis=X/Y/Z
-flow_direction=actual water-flow direction, e.g. -X
-inlet_side=inlet side, e.g. +X
-outlet_side=outlet side, e.g. -X
-rotation_vector=angular-velocity vector direction, e.g. +X
-origin=[0,0,0]
-prism_mode=wall_resolved
-pilot=400 steps
-```
-
-See `docs/case_schema.md` for the YAML schema.
-
-## Workflow
-
-1. Run `version` to confirm Python, STAR-CCM+ path, and available mesh presets.
-2. Check that the STEP/STP file exists and inspect units, bbox, and obvious geometry risks.
-3. Confirm the input template: D/L, speed, rpm, fluid, shaft axis, flow direction, and rotation vector.
-4. Run `workflow preflight`.
-5. Generate surface/no-prism and prism mesh.
-6. Run a 400-step pilot.
-7. Review `run_report.md`, residuals, thrust/torque, and y+ diagnostics.
-8. Export postprocess cloud images if a `.sim` file is available.
-
-## Direction Convention
-
-Do not use a single ambiguous `axis=X` to describe every direction. Confirm these separately:
-
-- `shaft_axis`: which geometric axis the propeller shaft follows, X/Y/Z.
-- `flow_direction`: the actual water-flow direction.
-- `rotation_vector`: angular-velocity vector direction by the right-hand rule.
-- `velocity`: positive speed magnitude only.
-- `rpm`: positive rotation-speed magnitude only.
-
-Example:
-
-```yaml
-domain:
-  shaft_axis: X
-  hub_axis: +X
-
-operating_condition:
-  velocity: 3.0 m/s
-  flow_direction: -X
-  rpm: 900 rpm
-  rotation_vector: +X
-```
-
-## Postprocess Output
-
-After `workflow run` or `results extract/analyze` succeeds, AutoStar attempts to export report-facing cloud images automatically. You can also export from an existing solved `.sim` manually:
-
-```powershell
-python ./starccm_cli.py --project-dir C:/runs/case1 postprocess clouds --case C:/runs/case1/case.yaml
-```
-
-To verify command routing, case parsing, and macro generation without launching STAR-CCM+:
-
-```powershell
-python ./starccm_cli.py --project-dir C:/runs/case1 postprocess clouds --case C:/runs/case1/case.yaml --dry-run
-```
-
-Outputs are written to `postprocess_clouds/figures`, with a report at `postprocess_clouds/postprocess_clouds_report.md`. If `run_report.md` exists, a cloud-image index is appended. Current postprocessing outputs include:
-
-- Four-view propeller surface pressure images.
-- Four-view propeller surface y+ images.
-- Combined pressure/y+ contact sheet.
-- Center-plane pressure/velocity images.
-- Mesh-section images.
-- Complete contact sheet.
-
-## Verification
-
-Run before publishing or after installation:
-
-```powershell
-python ./tests/verify_public_preview_package.py
-python ./tests/verify_public_preview_package.py --with-engine
-```
-
-The second command calls the bundled engine and requires STAR-CCM+ to be discoverable on the local machine.
-
-## Usage Boundaries
-
-This repository is intended for evaluation, demonstration, education, and workflow validation. To protect author rights, please follow these boundaries:
-
-- Do not sell, rent, resell, or redistribute this project, modified copies, or lightly repackaged versions as a competing product.
-- `quick` / `coarse` outputs are intended for preliminary validation and education. They are not recommended for formal engineering certification, class approval, or publication-ready CFD conclusions. Users are responsible for any engineering, business, or publication decisions made from preliminary outputs.
-- Public demos, courses, videos, or articles should cite this repository or OSK.
-
-See `LICENSE` / `LICENSE.md` for complete terms.
-
-## License
-
-This package uses a custom Public Preview License, not MIT. MIT-style licenses are intentionally permissive; this preview package keeps narrower usage boundaries for author-rights protection and workflow validation.
-
-Full terms: `LICENSE` / `LICENSE.md`.
-
-## Siemens / STAR-CCM+ Notice
-
-STAR-CCM+ is a Siemens commercial software product and trademark. This project is not an official Siemens product, does not include STAR-CCM+ software, does not provide a STAR-CCM+ license, and does not provide cracking, license bypassing, or license replacement services. Users must ensure that their STAR-CCM+ installation and usage comply with Siemens license terms.
-
-## Support
-
-When opening an issue, include:
-
-- Output from `python ./starccm_cli.py version`.
-- STAR-CCM+ version.
-- Windows version.
-- `case.yaml`, with private paths or sensitive geometry names removed if needed.
-- `preflight_report.md` or `run_report.md`.
-- Relevant log snippets, screenshots, or error messages.
-
-Do not publicly upload confidential STEP/STP, `.sim`, or complete project files.
-
-For vulnerabilities, private-key exposure, credential leaks, or unintended access paths, do not open a public issue. Use [GitHub Private Vulnerability Reporting](https://github.com/Ouscar-ou/AutoStar/security/advisories/new).
+Submit security concerns privately through [GitHub Private Vulnerability Reporting](https://github.com/Ouscar-ou/AutoStar/security/advisories/new).

@@ -1,15 +1,7 @@
-# Runtime binaries
+# Runtime Binaries
 
-This directory contains the bundled runtime binary required by AutoStar public preview.
+This directory contains the AutoStar runtime files required by the current preview.
 
-Expected file:
+用户通常应通过根目录的 `starccm_cli.py` 使用 AutoStar，不要直接修改或替换本目录中的程序文件。
 
-- `starccm_engine.exe`: single-layer Nuitka public-preview runtime engine with built-in cloud postprocessing and signed-manifest verification.
-
-AutoStar public preview does not require separate AutoStar activation. Users still need their own valid Siemens STAR-CCM+ installation and license.
-
-Do not place private keys, server credentials, signing keys, API tokens, or service credentials in this directory.
-
-The release signing private key is never distributed. The package contains only `release_manifest.ed25519.sig`; the engine contains the corresponding public verification key and checks its own hash plus critical public files before running CFD commands.
-
-Users should normally run the public wrapper `starccm_cli.py`. For release verification, direct commands `starccm_engine.exe integrity-check`, `starccm_engine.exe author`, and `starccm_engine.exe --ai-notice` are supported.
+AutoStar does not include Siemens STAR-CCM+ software or licensing. A runnable, properly licensed local STAR-CCM+ installation is still required.

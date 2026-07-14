@@ -1,15 +1,14 @@
 # Release Notes
 
-## 0.3.2-public-preview
+## 0.3.2 Public Preview
 
-- Initial public-preview release for STAR-CCM+ open-water propeller CFD workflow validation.
-- Limits public mesh presets to `quick` and `coarse`.
-- Provides STEP/STP checks, explicit direction semantics, preflight, 400-step pilot diagnostics, reports, and compiled cloud postprocessing.
-- Uses a single public-only Nuitka executable with no nested private engine or exposed postprocess Python module.
-- Compiles author queries, Chinese author queries, AI notice handling, and Ed25519 manifest verification into executable control flow.
-- Enforces required hashes for the engine, public wrappers, AI policy, and `LICENSE`.
-- Treats README, INSTALL, examples, ordinary docs, and `SKILL.md` changes as visible warnings rather than runtime failures.
-- Supports user-owned additions under `extensions/`, `workflows/`, and `templates/local/` without automatic execution.
-- Adds SHA256-before-extraction installation instructions and extension-preserving upgrades.
-- Provides GitHub Private Vulnerability Reporting as the private security channel.
-- Includes restricted-preset, environment-spoofing, core-tamper, advisory-warning, extension, package-integrity, and executable-metadata tests.
+- Introduces the AutoStar public preview for STAR-CCM+ open-water propeller CFD workflow validation.
+- Provides `quick` and `coarse` mesh presets for preliminary workflow checks.
+- Adds STEP/STP geometry review, explicit direction inputs, preflight, and 400-step pilot diagnostics.
+- Reports residuals, thrust, torque, stability, y+, and result usability in structured Markdown and JSON outputs.
+- Exports four-view propeller pressure/y+ images, center-plane pressure/velocity, mesh sections, and contact sheets from solved cases.
+- Includes Chinese and English installation guides and Codex chat-based test prompts.
+- Provides dedicated folders for user extensions, local workflows, and local templates.
+- Adds release-package verification and SHA256 download-check instructions.
+
+Future releases will progressively introduce additional engineering mesh, grid-assessment, batch-analysis, automated-iteration, diagnostic, and reporting capabilities after validation.

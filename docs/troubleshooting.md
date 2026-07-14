@@ -16,12 +16,6 @@ mesh:
   preset: coarse
 ```
 
-## OSK activation message
-
-This preview does not require OSK activation. If you see `OSK activation: not required for this preview edition` in `version`, that is correct.
-
-STAR-CCM+ itself is a commercial Siemens product. If STAR reports a license error, fix your STAR-CCM+ license or license server; it is not an OSK activation issue.
-
 ## STAR-CCM+ path is not found
 
 Confirm the STAR-CCM+ install path with the user first. Then set the launcher path for the current PowerShell session:

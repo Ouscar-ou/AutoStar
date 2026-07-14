@@ -1,38 +1,31 @@
-# 安装说明
+# AutoStar 安装说明
 
 [English installation guide](INSTALL.md) | 中文
 
-本文档用于 AutoStar 公开预览版安装。
-
-AutoStar 不包含 Siemens STAR-CCM+ 软件本体，不提供 STAR-CCM+ 授权，也不会绕过任何商业软件授权。你必须使用自己或所在机构合法授权的本机 STAR-CCM+。
+本文档用于安装 AutoStar 初步版本。AutoStar 不包含 Siemens STAR-CCM+ 软件或授权，使用前请确认本机 STAR-CCM+ 可以正常启动并具有有效授权。
 
 ## 1. 环境要求
 
 - Windows 10/11。
 - PowerShell 中可用的 Python 3.10+。
-- 本机已安装 Siemens STAR-CCM+；当前预览版已在 STAR-CCM+ 18.04.008 上验证。
-- 来自 Siemens 或所在机构的有效 STAR-CCM+ license。
-- STEP/STP 螺旋桨几何文件，以及已确认的物理工况。
+- 本机已安装 Siemens STAR-CCM+；当前版本已在 STAR-CCM+ `18.04.008-R8` 上验证。
+- 一个用于存放 CFD 算例和输出的独立工作目录。
 
-## 2. 推荐：使用 Codex 安装
+## 2. 推荐：让 Codex 安装
 
-这是多数 Codex 用户推荐的方式，但 Codex 在写入文件或创建环境前必须先询问你。
+安装前先确定安装来源和三个本地路径。
 
-安装前先确认一个安装来源和三个路径。
+安装来源可以是：
 
-安装来源可以三选一：
+1. GitHub 仓库：`https://github.com/Ouscar-ou/AutoStar`
+2. 官方 Release ZIP：例如 `C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.2-windows-x64.zip`
+3. 已解压或已 clone 的本地文件夹。
 
-1. GitHub 仓库地址：例如 `https://github.com/Ouscar-ou/AutoStar`
-2. 已下载的 release ZIP：例如 `C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.2-windows-x64.zip`
-3. 已解压或已 clone 的本地文件夹：例如 `C:/Users/<your-user-name>/Downloads/AutoStar`
+需要用户确认的三个路径是：
 
-如果 Codex 所在环境可以访问 GitHub，直接把 GitHub URL 写进 prompt 最方便。如果网络、权限或仓库可见性不稳定，建议你先手动下载官方 release ZIP，再把本地 ZIP 路径交给 Codex。不要把 GitHub token、账号密码或私有凭据直接粘贴到 prompt 里。
-
-三个路径是：
-
-1. Skill install folder：AutoStar skill 要复制到哪里。
-2. Local Python environment folder：是否创建局部 Python `.venv`，推荐创建但必须由你确认位置。
-3. Case workspace folder：后续 CFD 算例和输出放在哪里。
+1. Skill install folder：AutoStar skill 的安装位置。
+2. Local Python environment folder：是否创建局部 Python `.venv`，以及创建位置。
+3. Case workspace folder：后续 CFD 算例和结果的保存位置。
 
 推荐布局：
 
@@ -47,33 +40,27 @@ Case workspace folder:
 C:/Users/<your-user-name>/Documents/autostar_runs
 ```
 
-你可以这样让 Codex 安装：
+可以直接把下面的提示词交给 Codex：
 
 ```text
-请从 https://github.com/Ouscar-ou/AutoStar 安装 AutoStar 初步版本。安装前先问我 skill 放在哪里、是否创建局部 .venv、算例输出放在哪里；不要修改全局 Python、PATH 或 STAR-CCM+ 安装目录。安装后运行 version 检查环境。
+请从 https://github.com/Ouscar-ou/AutoStar 安装 AutoStar 初步版本。
+安装前先询问我 skill 安装目录、是否创建局部 .venv，以及 CFD 算例输出目录。
+优先使用局部环境，不要修改全局 Python、Conda、PATH 或 STAR-CCM+ 安装目录。
+安装完成后运行 integrity-check 和 version，并用中文说明检查结果。
 ```
 
-如果你已经下载了 ZIP，也可以这样说：
+如果已经下载 ZIP，可以把第一行改为：
 
 ```text
-请从这个本地 ZIP 安装 AutoStar：C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.2-windows-x64.zip。安装前先问我 skill 放在哪里、是否创建局部 .venv、算例输出放在哪里；不要修改全局 Python、PATH 或 STAR-CCM+ 安装目录。先核对 SHA256SUMS.txt，安装后再运行 integrity-check 和 version。
+请从这个本地 ZIP 安装 AutoStar：C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.2-windows-x64.zip，并先使用同一 Release 中的 SHA256SUMS.txt 核对下载文件。
 ```
 
-如果你同意创建局部 `.venv`，在你确认的文件夹中执行：
-
-```powershell
-python -m venv C:/Users/<your-user-name>/Documents/autostar_env/.venv
-& C:/Users/<your-user-name>/Documents/autostar_env/.venv/Scripts/python.exe C:/Users/<your-user-name>/.codex/skills/autostar/starccm_cli.py version
-```
-
-当前预览版通常不需要安装额外 Python 包。除非你明确要求，否则不要运行 `pip install`、不要升级 pip、不要修改全局 PATH。
-
-重要：除非你明确同意具体动作和目标路径，否则 Codex 不应安装 Python、不应创建虚拟环境、不应修改 PATH、不应设置 `STARCCM_BAT` 或 `STARCCM_EXE`，也不应修改 STAR-CCM+ 安装目录。
+当前版本通常不需要额外 Python 包。除非用户明确同意，不要运行 `pip install`、升级 pip、修改全局 PATH，或改动 STAR-CCM+ 安装目录。
 
 ## 3. 手动从 ZIP 安装
 
 1. 从同一个官方 GitHub Release 下载 `AutoStar-v0.3.2-windows-x64.zip` 和 `SHA256SUMS.txt`。
-2. 解压或运行任何文件前，先在 PowerShell 中核对 ZIP 哈希：
+2. 解压前在 PowerShell 中核对 ZIP 的 SHA256：
 
 ```powershell
 $downloadDir = "C:/Users/<your-user-name>/Downloads"
@@ -85,21 +72,28 @@ if ($actual -ne $expected) { throw "AutoStar ZIP SHA256 mismatch: $actual != $ex
 "AutoStar ZIP SHA256 verified: $actual"
 ```
 
-3. 把校验通过的 ZIP 解压到临时文件夹。
-4. 选择安装文件夹。推荐：
+3. 将校验通过的 ZIP 解压到临时文件夹。
+4. 将包内容复制到用户确认的 skill 目录，例如：
 
 ```text
 C:/Users/<your-user-name>/.codex/skills/autostar
 ```
 
-5. 把解压后的 `AutoStar` 包内容复制到该文件夹。
-6. 可选但推荐：在你指定的位置创建局部 Python `.venv`，不要放进全局 Python：
+5. 确认安装目录层级正确：
+
+```text
+C:/Users/<your-user-name>/.codex/skills/autostar/SKILL.md
+```
+
+不要多嵌套一层 `AutoStar/AutoStar/`。
+
+6. 可选：在用户指定的位置创建局部 Python 环境：
 
 ```powershell
 python -m venv C:/Users/<your-user-name>/Documents/autostar_env/.venv
 ```
 
-7. 在 AutoStar 安装文件夹中打开 PowerShell，运行：
+7. 在 AutoStar 安装目录中运行检查：
 
 ```powershell
 & C:/Users/<your-user-name>/Documents/autostar_env/.venv/Scripts/python.exe ./starccm_cli.py integrity-check
@@ -107,140 +101,78 @@ python -m venv C:/Users/<your-user-name>/Documents/autostar_env/.venv
 & C:/Users/<your-user-name>/Documents/autostar_env/.venv/Scripts/python.exe ./tests/verify_public_preview_package.py
 ```
 
-如果你想继续用 Codex 对话方式跑通测试案例，安装验证通过后打开 [`examples/codex_chat_test.zh.md`](examples/codex_chat_test.zh.md)。
+如果没有创建 `.venv`，将命令前半部分替换为 `python`。
 
-先复制其中“安装后冒烟检查”给 Codex；如果你已有 STEP/STP 文件，再继续复制“quick 预检”和“400-step pilot”的提示词。
+## 4. 安装完成后的检查
 
-正常情况下你应看到：
+正常情况下应看到：
 
-- `Edition: public`
-- `Available mesh presets: quick, coarse`
-- `OSK activation: not required for this preview edition`
-- STAR-CCM+ 可执行路径和兼容版本提示。
+- 安装完整性检查通过。
+- `Edition: public`。
+- `Available mesh presets: quick, coarse`。
+- 本机 STAR-CCM+ 路径与版本信息。
 
-看到这些输出后，文件层面的安装已经完成。接下来新开一个 Codex 任务/窗口，或重启 Codex，让 Codex 重新扫描 `.codex/skills` 目录。之后你就可以在 Codex 里直接说“使用 AutoStar/使用 autostar 做螺旋桨 CFD 流程检查”，Codex 会读取该 skill 并按安装好的工作流执行。
+如果 STAR-CCM+ 未被识别，先按第 5 节确认路径，不要直接开始网格或求解。
 
-注意安装目录层级应为：
-
-```text
-C:/Users/<your-user-name>/.codex/skills/autostar/SKILL.md
-```
-
-不要变成：
-
-```text
-C:/Users/<your-user-name>/.codex/skills/autostar/AutoStar/SKILL.md
-```
-## 4. 首次运行检查
-
-创建或运行任何 CFD 算例前，都应先在 AutoStar 安装文件夹运行：
-
-```powershell
-python ./starccm_cli.py integrity-check
-python ./starccm_cli.py version
-python ./tests/verify_public_preview_package.py
-```
-
-`integrity-check` 必须显示 `AutoStar integrity: verified`。如果签名、EXE 或关键 skill 文件被修改，AutoStar 会停止执行；请重新下载官方 release，不要绕过检查。
-
-如果要进行本地扩展，不要修改强制核心文件。自定义脚本放入 `extensions/`，工作流定义放入 `workflows/`，本地模板放入 `templates/local/`。加入扩展后来源标记会变为 `official core + user extensions`，但普通运行不会停止；发布包验证脚本仍会严格检查官方包是否原样，因此可能按预期报告 package mismatch。
-
-如果你在发布/测试机器上，希望连同 bundled engine 一起验证：
-
-```powershell
-python ./tests/verify_public_preview_package.py --with-engine
-```
-
-只有 STAR-CCM+ 被正确识别后，才继续网格或求解。
-
-如果你希望完全通过 Codex 对话方式测试，请打开 [`examples/codex_chat_test.zh.md`](examples/codex_chat_test.zh.md)。
-
-该文件包含三段可复制给 Codex 的提示词：安装冒烟检查、使用你自己的 STEP 运行 quick preflight、以及确认后继续 400-step pilot。
+检查通过后，新开一个 Codex 任务或重启 Codex，让 Codex 重新扫描 `.codex/skills`。之后可以直接说“使用 AutoStar 检查我的螺旋桨 STEP”。
 
 ## 5. STAR-CCM+ 路径
 
-AutoStar 会尝试自动寻找 STAR-CCM+。如果未识别到，请先确认 STAR-CCM+ 的安装位置，然后只在当前 PowerShell 会话中设置以下变量之一：
+AutoStar 会尝试自动查找 STAR-CCM+。如果未识别到，请先确认实际安装位置，再只为当前 PowerShell 会话设置一个启动路径：
 
 ```powershell
 $env:STARCCM_BAT="C:/Program Files/Siemens/<version>/STAR-CCM+<version>/star/bin/starccm+.bat"
-```
-
-或：
-
-```powershell
-$env:STARCCM_EXE="C:/Program Files/Siemens/<version>/STAR-CCM+<version>/star/bin/starccm+.bat"
-```
-
-然后重新运行：
-
-```powershell
 python ./starccm_cli.py version
 ```
 
-除非你理解影响并且确实需要，否则不要永久写入这些环境变量。
+也可以使用 `STARCCM_EXE` 指向本机可用的 STAR-CCM+ 启动程序。建议先使用当前会话的临时设置；是否写入系统环境由用户自行决定。
 
 ## 6. 第一个算例
 
-如果你希望直接用 Codex 对话方式完成第一个算例测试，请优先打开 [`examples/codex_chat_test.zh.md`](examples/codex_chat_test.zh.md)。
+对话式测试入口：[`examples/codex_chat_test.zh.md`](examples/codex_chat_test.zh.md)
 
-该文件提供可直接复制给 Codex 的中文提示词入口，包括安装后冒烟检查、使用你自己的 STEP/STP 做 quick preflight，以及在确认后继续 400-step pilot。下面的命令式流程适合你想手动检查 case 文件和运行步骤时使用。
+打开该文件并复制“安装后冒烟检查”提示词给 Codex。检查通过后，再使用“quick 预检”和“400-step pilot”提示词测试自己的 STEP/STP 文件。
 
-复制示例 case：
-
-```powershell
-mkdir C:/runs/case1
-copy ./examples/preview_quick_case.yaml C:/runs/case1/case.yaml
-```
-
-编辑 `C:/runs/case1/case.yaml`，确认：
-
-- STEP/STP 文件路径。
-- 螺旋桨直径 `D` 和轴向长度 `L`。
-- 来流方向和入口/出口侧。
-- 旋转矢量方向和转速 rpm。
-- 网格密度只能使用 `quick` 或 `coarse`。
-
-然后运行 preflight：
-
-```powershell
-python ./starccm_cli.py --project-dir C:/runs/case1 workflow preflight --case C:/runs/case1/case.yaml
-```
-
-只有在 preflight 可接受、且用户确认本次运行后，才启动 workflow：
-
-```powershell
-python ./starccm_cli.py --project-dir C:/runs/case1 workflow run --case C:/runs/case1/case.yaml
-```
-
-## 7. 升级
-
-1. 关闭正在使用该包的 STAR-CCM+ 任务。
-2. 如有需要，备份 case 文件夹；正常情况下 case workspace 应位于 skill 安装目录之外。
-3. 确认旧安装文件夹，然后归档整个旧目录，不要直接删除。
-4. 特别检查并保留 `extensions/`、`workflows/`、`templates/local/` 中的用户自建文件。
-5. 使用 `SHA256SUMS.txt` 校验新 Release ZIP，再把新的官方包安装到干净目录。
-6. 只把归档中的用户自建扩展、工作流和模板复制到新包对应目录；不要覆盖新版官方 `README.md` 或任何强制核心文件。
-7. 运行 `python ./starccm_cli.py integrity-check` 和 `python ./starccm_cli.py version`。
-8. 未添加扩展时应显示 `official core verified`；恢复扩展后应显示 `official core + user extensions`。
-9. 新版本和扩展验证完成前，保留旧安装归档。
-
-## 8. 卸载
-
-删除你选择的安装文件夹，例如：
+也可以直接从下面这段话开始：
 
 ```text
-C:/Users/<your-user-name>/.codex/skills/autostar
+使用 AutoStar 检查这个螺旋桨 STEP：
+STEP=你的 STEP/STP 文件路径
+目标=流程验证
+
+请先检查环境和几何，再用中文逐项询问我需要确认的尺寸、工况、来流方向、入口/出口、旋转矢量、网格和核数。
+汇总并闭环检查所有方向信息；未经我确认，不要开始网格或求解。
 ```
 
-这不会删除 STAR-CCM+，也不会删除你的 case 文件夹。
+AutoStar 会先完成环境与几何检查，再询问螺旋桨直径 D、轴向长度 L、速度、流向、转速、旋转矢量、流体参数、网格和核数。用户确认完整工况后，才进入 preflight 和 400-step pilot。
 
-## 9. 常见问题
+`quick` 适合最低成本的流程验证，`coarse` 适合稍密的初步筛查。400 步用于发现明显方向、网格和发散风险，不应直接作为正式工程最终结果。
 
-- Python 未找到：先决定使用现有 Python 还是安装 Python。优先使用局部 `.venv`；除非明确同意，不要修改全局 PATH。
-- STAR-CCM+ 未找到：确认 STAR-CCM+ 安装路径，然后只在当前会话设置 `STARCCM_BAT` 或 `STARCCM_EXE`。
-- STAR license 失败：检查你的 Siemens STAR-CCM+ license；本预览版不提供 STAR 授权。
-- 杀毒软件拦截 `starccm_engine.exe`：恢复或允许官方 release 文件夹，然后核对 SHA256 manifest。
-- preflight 提示只开放 quick/coarse：这是当前预览版本的预期行为。
-- 轴向或方向语义不清：不要运行；先分别确认 `shaft_axis`、`flow_direction` 和 `rotation_vector`。
+## 7. 本地扩展与升级
 
-更多说明见 `docs/troubleshooting.md`。
+请不要直接修改或替换安装包中的官方程序文件。自定义内容应放入：
+
+- `extensions/`：独立脚本、适配器和工具集成。
+- `workflows/`：自定义工作流说明与定义。
+- `templates/local/`：本地 case、输入和报告模板。
+
+升级建议：
+
+1. 备份 `extensions/`、`workflows/` 和 `templates/local/` 中的自定义内容。
+2. 将新版本安装到新的临时目录并完成安装检查。
+3. 用新版本替换旧的官方安装文件。
+4. 将自定义内容恢复到对应的扩展目录。
+5. 再次运行 `integrity-check` 和 `version`。
+
+CFD 算例和结果应保存在独立的 case workspace 中，不要放在 skill 安装目录内。
+
+## 8. 常见问题
+
+- `python` 不可用：先确认本机 Python 安装位置，或让 Codex 在用户确认的目录创建局部 `.venv`。
+- STAR-CCM+ 未识别：确认启动文件路径后，按第 5 节在当前会话设置路径。
+- 安装目录层级错误：确保 `SKILL.md` 直接位于 `.../.codex/skills/autostar/`。
+- Codex 没有识别 skill：新开任务或重启 Codex，再确认安装目录。
+- EXE 被安全软件拦截：确认下载来源和 ZIP SHA256 后，按本机安全策略处理。
+- STEP/STP 导入失败：先在 CAD 或 STAR-CCM+ 中确认单位、实体完整性和轴线方向。
+
+更完整的对话测试见 [`examples/codex_chat_test.zh.md`](examples/codex_chat_test.zh.md)。

@@ -1,40 +1,33 @@
-# Installation Guide
+# AutoStar Installation Guide
 
-[中文安装说明](INSTALL.zh.md) | English
+English | [中文安装说明](INSTALL.zh.md)
 
-This guide is for the AutoStar public preview.
-
-AutoStar does not include Siemens STAR-CCM+ and does not provide a STAR-CCM+ license. You must use your own properly licensed local STAR-CCM+ installation.
+This guide installs the AutoStar preview. AutoStar does not include Siemens STAR-CCM+ software or licensing. Before use, confirm that a properly licensed STAR-CCM+ installation runs on the local machine.
 
 ## 1. Requirements
 
 - Windows 10/11.
 - Python 3.10+ available from PowerShell.
-- Local Siemens STAR-CCM+ installation. This preview has been validated on STAR-CCM+ 18.04.008.
-- A valid STAR-CCM+ license from Siemens or your organization.
-- A STEP/STP propeller geometry and confirmed physical operating conditions.
+- A local Siemens STAR-CCM+ installation; the current version has been validated with STAR-CCM+ `18.04.008-R8`.
+- A separate workspace for CFD cases and outputs.
 
-## 2. Recommended Install With Codex
+## 2. Recommended: Install With Codex
 
-This is the recommended path for most Codex users, but Codex must ask before writing files or creating environments.
+Before installation, choose the package source and confirm three local paths.
 
-Before installation, confirm one package source and three local paths.
+The package source can be:
 
-The package source can be one of:
+1. GitHub repository: `https://github.com/Ouscar-ou/AutoStar`
+2. Official Release ZIP, for example `C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.2-windows-x64.zip`
+3. An extracted or cloned local folder.
 
-1. GitHub repository URL: for example `https://github.com/Ouscar-ou/AutoStar`
-2. Downloaded release ZIP: for example `C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.2-windows-x64.zip`
-3. Already extracted or cloned local folder: for example `C:/Users/<your-user-name>/Downloads/AutoStar`
+The user should confirm:
 
-If Codex can access GitHub, putting the GitHub URL in the prompt is the easiest path. If network access, repository visibility, or authentication is unreliable, download the official release ZIP first and give Codex the local ZIP path. Do not paste GitHub tokens, passwords, or private credentials into the prompt.
+1. Skill install folder: where AutoStar will be installed.
+2. Local Python environment folder: whether to create a local `.venv` and where.
+3. Case workspace folder: where CFD cases and outputs will be stored.
 
-The three local paths are:
-
-1. Skill install folder: where AutoStar will be copied.
-2. Local Python environment folder: optional, recommended as an isolated `.venv`.
-3. Case workspace folder: where CFD cases and outputs will be created.
-
-Recommended layout after confirmation:
+Recommended layout:
 
 ```text
 Skill install folder:
@@ -47,33 +40,27 @@ Case workspace folder:
 C:/Users/<your-user-name>/Documents/autostar_runs
 ```
 
-Prompt Codex with wording like:
+Give Codex this prompt:
 
 ```text
-Install the AutoStar preview from https://github.com/Ouscar-ou/AutoStar. Before installing, ask me where to place the skill, whether to create a local .venv, and where to put case outputs. Do not modify global Python, PATH, or the STAR-CCM+ installation directory. Run version after installation.
+Install the AutoStar preview from https://github.com/Ouscar-ou/AutoStar.
+Before installation, ask me for the skill folder, whether to create a local .venv, and the CFD case workspace.
+Prefer local environments and do not modify global Python, Conda, PATH, or the STAR-CCM+ installation directory.
+After installation, run integrity-check and version and explain the results.
 ```
 
-If you already downloaded the ZIP, use wording like:
+If the ZIP is already downloaded, replace the first line with:
 
 ```text
-Install AutoStar from this local ZIP: C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.2-windows-x64.zip. Before installing, ask me where to place the skill, whether to create a local .venv, and where to put case outputs. Do not modify global Python, PATH, or the STAR-CCM+ installation directory. Verify SHA256SUMS.txt, then run integrity-check and version after installation.
+Install AutoStar from this local ZIP: C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.2-windows-x64.zip, and first verify it against SHA256SUMS.txt from the same Release.
 ```
 
-If you approve a local `.venv`, create it in the selected folder:
+The current preview normally requires no additional Python packages. Do not run `pip install`, upgrade pip, modify global PATH, or change the STAR-CCM+ installation directory without user approval.
 
-```powershell
-python -m venv C:/Users/<your-user-name>/Documents/autostar_env/.venv
-& C:/Users/<your-user-name>/Documents/autostar_env/.venv/Scripts/python.exe C:/Users/<your-user-name>/.codex/skills/autostar/starccm_cli.py version
-```
+## 3. Manual ZIP Installation
 
-No package installation is normally required for this preview. Do not run `pip install`, do not upgrade pip, and do not modify PATH unless the user explicitly asks for it.
-
-Important: Codex should not install Python, create a virtual environment, modify PATH, set `STARCCM_BAT`, set `STARCCM_EXE`, or change the STAR-CCM+ installation directory unless the user explicitly approves the action and target path.
-
-## 3. Manual Install From ZIP
-
-1. Download both `AutoStar-v0.3.2-windows-x64.zip` and `SHA256SUMS.txt` from the same official GitHub Release.
-2. Before extracting or running anything, verify the ZIP hash in PowerShell:
+1. Download `AutoStar-v0.3.2-windows-x64.zip` and `SHA256SUMS.txt` from the same official GitHub Release.
+2. Verify the ZIP SHA256 in PowerShell before extraction:
 
 ```powershell
 $downloadDir = "C:/Users/<your-user-name>/Downloads"
@@ -86,20 +73,27 @@ if ($actual -ne $expected) { throw "AutoStar ZIP SHA256 mismatch: $actual != $ex
 ```
 
 3. Extract the verified ZIP to a temporary folder.
-4. Choose your install folder. Recommended:
+4. Copy the package contents to the user-approved skill folder, for example:
 
 ```text
 C:/Users/<your-user-name>/.codex/skills/autostar
 ```
 
-5. Copy the extracted `AutoStar` package contents into that folder.
-6. Optional but recommended: create a local Python `.venv` in a user-selected folder, not in global Python:
+5. Confirm the directory layout:
+
+```text
+C:/Users/<your-user-name>/.codex/skills/autostar/SKILL.md
+```
+
+Do not create an extra nested `AutoStar/AutoStar/` directory.
+
+6. Optionally create a local Python environment in a user-approved location:
 
 ```powershell
 python -m venv C:/Users/<your-user-name>/Documents/autostar_env/.venv
 ```
 
-7. Open PowerShell in the AutoStar install folder and run:
+7. Run checks from the AutoStar installation folder:
 
 ```powershell
 & C:/Users/<your-user-name>/Documents/autostar_env/.venv/Scripts/python.exe ./starccm_cli.py integrity-check
@@ -107,141 +101,78 @@ python -m venv C:/Users/<your-user-name>/Documents/autostar_env/.venv
 & C:/Users/<your-user-name>/Documents/autostar_env/.venv/Scripts/python.exe ./tests/verify_public_preview_package.py
 ```
 
-If you want to continue with a chat-based Codex test case, open [`examples/codex_chat_test.en.md`](examples/codex_chat_test.en.md) after installation verification passes.
+If no `.venv` was created, replace the executable prefix with `python`.
 
-Start by copying the post-install smoke-check prompt into Codex. If you have a STEP/STP file, continue with the quick preflight and 400-step pilot prompts.
+## 4. Post-Installation Check
 
-You should see:
+A normal installation should report:
 
-- `Edition: public`
-- `Available mesh presets: quick, coarse`
-- `OSK activation: not required for this preview edition`
-- A STAR-CCM+ executable path and compatible version message.
+- A successful installation-completeness check.
+- `Edition: public`.
+- `Available mesh presets: quick, coarse`.
+- The detected STAR-CCM+ path and version.
 
+If STAR-CCM+ is not found, confirm the path as described in section 5 before meshing or solving.
 
-After these checks pass, the file-level installation is complete. Open a new Codex task/window, or restart Codex, so Codex can rescan the `.codex/skills` directory. Then you can ask Codex to `use AutoStar/autostar for a propeller CFD workflow check`, and Codex should load this skill.
-
-Make sure the install folder layout is:
-
-```text
-C:/Users/<your-user-name>/.codex/skills/autostar/SKILL.md
-```
-
-Do not accidentally create a nested layout like:
-
-```text
-C:/Users/<your-user-name>/.codex/skills/autostar/AutoStar/SKILL.md
-```
-## 4. First-Run Environment Check
-
-Before creating or running any CFD case, always run from the selected AutoStar folder:
-
-```powershell
-python ./starccm_cli.py integrity-check
-python ./starccm_cli.py version
-python ./tests/verify_public_preview_package.py
-```
-
-`integrity-check` must report `AutoStar integrity: verified`. If the signature, executable, or a critical skill file has changed, AutoStar stops; reinstall from the official release instead of bypassing the check.
-
-For local development, do not edit the required core files. Put custom scripts in `extensions/`, workflow definitions in `workflows/`, and local templates in `templates/local/`. Added extension files change the source label to `official core + user extensions` but do not stop normal execution. The release-package verification script remains intentionally strict and may report a package mismatch after local extensions are added.
-
-If you are on the release/test machine and want to validate the bundled engine too:
-
-```powershell
-python ./tests/verify_public_preview_package.py --with-engine
-```
-
-Do not start meshing or solving until STAR-CCM+ is detected correctly.
-
-If you want to test AutoStar entirely through Codex chat, open [`examples/codex_chat_test.en.md`](examples/codex_chat_test.en.md).
-
-It contains copy-and-paste prompts for post-install smoke check, quick preflight with your own STEP, and a confirmed 400-step pilot.
+After the checks pass, open a new Codex task or restart Codex so it rescans `.codex/skills`. You can then say: "Use AutoStar to check my propeller STEP file."
 
 ## 5. STAR-CCM+ Path
 
-AutoStar tries to locate STAR-CCM+ automatically. If STAR-CCM+ is not found, first confirm where STAR-CCM+ is installed, then set one of these variables only for the current PowerShell session:
+AutoStar attempts to locate STAR-CCM+ automatically. If discovery fails, confirm the real installation path and set a launcher path for the current PowerShell session:
 
 ```powershell
 $env:STARCCM_BAT="C:/Program Files/Siemens/<version>/STAR-CCM+<version>/star/bin/starccm+.bat"
-```
-
-or:
-
-```powershell
-$env:STARCCM_EXE="C:/Program Files/Siemens/<version>/STAR-CCM+<version>/star/bin/starccm+.bat"
-```
-
-Then rerun:
-
-```powershell
 python ./starccm_cli.py version
 ```
 
-Do not write these variables permanently unless you understand the impact and want that behavior.
+`STARCCM_EXE` may also point to a usable local STAR-CCM+ launcher. Prefer a temporary current-session setting first; the user decides whether any system-level environment setting is appropriate.
 
 ## 6. First Case
 
-If you prefer to run the first case through Codex chat, open [`examples/codex_chat_test.en.md`](examples/codex_chat_test.en.md) first.
+Chat-based test entry: [`examples/codex_chat_test.en.md`](examples/codex_chat_test.en.md)
 
-That file provides English copy-and-paste prompts for the post-install smoke check, quick preflight with your own STEP/STP file, and the confirmed 400-step pilot. The command-based flow below is useful when you want to inspect the case file and run steps manually.
+Open that file and give Codex the post-install smoke-check prompt. After it passes, use the quick-preflight and 400-step-pilot prompts with your own STEP/STP file.
 
-Copy the example case:
-
-```powershell
-mkdir C:/runs/case1
-copy ./examples/preview_quick_case.yaml C:/runs/case1/case.yaml
-```
-
-Edit `C:/runs/case1/case.yaml` and confirm:
-
-- STEP/STP path.
-- Diameter `D` and axial length `L`.
-- Flow direction and inlet/outlet side.
-- Rotation-vector direction and rpm.
-- Mesh preset: `quick` or `coarse` only.
-
-Then run preflight:
-
-```powershell
-python ./starccm_cli.py --project-dir C:/runs/case1 workflow preflight --case C:/runs/case1/case.yaml
-```
-
-Only after preflight is acceptable and the user confirms this run, start the workflow:
-
-```powershell
-python ./starccm_cli.py --project-dir C:/runs/case1 workflow run --case C:/runs/case1/case.yaml
-```
-
-## 7. Upgrade
-
-1. Close running STAR-CCM+ jobs that use this package.
-2. Back up your case folders if needed; normal case workspaces should already be outside the skill installation.
-3. Confirm the old install folder, then archive the entire folder instead of deleting it.
-4. Pay special attention to user-created files under `extensions/`, `workflows/`, and `templates/local/`.
-5. Verify the new Release ZIP against its `SHA256SUMS.txt`, then install the new official package into a clean folder.
-6. Copy only your user-created extension/workflow/template files from the archive into the corresponding new directories. Do not overwrite the new official `README.md` files or any required core file.
-7. Run `python ./starccm_cli.py integrity-check` and `python ./starccm_cli.py version`.
-8. An unchanged installation reports `official core verified`; an installation with restored extensions reports `official core + user extensions`.
-9. Keep the archived old installation until the new version and extensions have been verified.
-
-## 8. Uninstall
-
-Delete the selected install folder, for example:
+You can also begin with:
 
 ```text
-C:/Users/<your-user-name>/.codex/skills/autostar
+Use AutoStar to check this propeller STEP file:
+STEP=your STEP/STP file path
+Goal=workflow validation
+
+Check the environment and geometry first. Then ask me, one item at a time, for dimensions, operating conditions, flow direction, inlet/outlet sides, rotation vector, mesh, and core count.
+Summarize and cross-check all direction inputs. Do not start meshing or solving without my confirmation.
 ```
 
-This does not remove STAR-CCM+ or your case folders.
+AutoStar first checks the environment and geometry, then asks for diameter D, axial length L, speed, flow direction, rpm, rotation vector, fluid properties, mesh, and core count. Preflight and the 400-step pilot begin only after the user confirms the complete setup.
 
-## 9. Troubleshooting
+`quick` is the lowest-cost workflow check. `coarse` provides a somewhat denser preliminary screen. A 400-step run is intended to identify obvious direction, mesh, and divergence risks, not to serve directly as a final engineering result.
 
-- Python not found: first decide whether to install Python or use an existing Python. Prefer a local `.venv`; do not modify global PATH unless explicitly approved.
-- STAR-CCM+ not found: confirm the STAR-CCM+ install path, then set `STARCCM_BAT` or `STARCCM_EXE` for the current session.
-- STAR license failure: check your Siemens STAR-CCM+ license; this preview does not provide a STAR license.
-- Antivirus blocks `starccm_engine.exe`: restore or allow the official release folder, then verify the SHA256 manifest.
-- Preflight says only quick/coarse are available: this is expected in the current preview.
-- Axis or direction is unclear: do not run; confirm `shaft_axis`, `flow_direction`, and `rotation_vector` separately.
+## 7. Local Extensions And Upgrades
 
-See `docs/troubleshooting.md` for more details.
+Do not directly modify or replace official program files in the installation. Put custom content in:
+
+- `extensions/`: independent scripts, adapters, and tool integrations.
+- `workflows/`: local workflow instructions and definitions.
+- `templates/local/`: local case, input, and report templates.
+
+Recommended upgrade process:
+
+1. Back up custom content under `extensions/`, `workflows/`, and `templates/local/`.
+2. Install the new version in a temporary folder and complete the installation checks.
+3. Replace the previous official installation files with the new version.
+4. Restore custom content to the corresponding extension folders.
+5. Run `integrity-check` and `version` again.
+
+Keep CFD cases and results in a separate case workspace, not in the skill installation folder.
+
+## 8. Troubleshooting
+
+- `python` is unavailable: confirm the local Python path or ask Codex to create a local `.venv` in a user-approved folder.
+- STAR-CCM+ is not found: confirm the launcher path and apply the current-session setting from section 5.
+- Directory layout is wrong: make sure `SKILL.md` is directly under `.../.codex/skills/autostar/`.
+- Codex does not detect the skill: open a new task or restart Codex, then recheck the installation folder.
+- Security software blocks the EXE: verify the download source and ZIP SHA256, then follow the local security policy.
+- STEP/STP import fails: check units, body integrity, and shaft alignment in CAD or STAR-CCM+.
+
+For a complete chat-based test, see [`examples/codex_chat_test.en.md`](examples/codex_chat_test.en.md).

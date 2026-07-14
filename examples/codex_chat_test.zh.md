@@ -29,7 +29,6 @@ C:/Users/<your-user-name>/.codex/skills/autostar
 
 - `Edition: public`
 - `Available mesh presets: quick, coarse`
-- `OSK activation: not required for this preview edition`
 - 验证脚本输出 `OK: public-preview release package checks passed`
 
 ## 测试 2：用自己的 STEP 做 quick 预检

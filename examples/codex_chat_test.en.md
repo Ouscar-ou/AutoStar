@@ -29,7 +29,6 @@ Expected pass signals:
 
 - `Edition: public`
 - `Available mesh presets: quick, coarse`
-- `OSK activation: not required for this preview edition`
 - `OK: public-preview release package checks passed`
 
 ## Test 2: Quick Preflight With Your Own STEP

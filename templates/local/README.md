@@ -4,9 +4,10 @@ Place local case, input, and report templates in this directory.
 
 将本地 case、输入和报告模板放在这里。
 
-- Templates must stay within the documented quick/coarse public boundary.
-- Keep machine-specific paths and confidential project data out of templates intended for sharing.
-- Do not store private keys, API tokens, STAR-CCM+ licensing material, STEP/STP geometry, or `.sim` files here.
-- Review every template before using it to create or run a case.
+- Keep machine-specific paths and project data out of templates intended for sharing.
+- Review each template and confirm its physical inputs before creating or running a case.
+- Store geometry, `.sim` files, and generated results in the case workspace rather than this directory.
 
-AutoStar detects added files as user extensions but does not apply them automatically.
+- 计划共享的模板不应包含本机专用路径或项目数据。
+- 创建或运行算例前，应检查模板并确认其中的物理参数。
+- 几何文件、`.sim` 和计算结果应放在 case workspace，而不是本目录。

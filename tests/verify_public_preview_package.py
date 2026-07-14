@@ -193,18 +193,17 @@ def check_install_guidance() -> None:
     install_zh = read_text(ROOT / "INSTALL.zh.md")
     skill = read_text(ROOT / "SKILL.md")
     required_install_phrases = (
-        "GitHub repository URL",
-        "Downloaded release ZIP",
+        "GitHub repository",
+        "Official Release ZIP",
         "Skill install folder",
         "Local Python environment folder",
         "Case workspace folder",
         "python -m venv",
         "Do not run `pip install`",
-        "do not modify PATH",
+        "do not modify global Python",
         "AutoStar-v0.3.2-windows-x64.zip",
         "SHA256SUMS.txt",
         "Get-FileHash",
-        "archive the entire folder",
         "extensions/",
         "workflows/",
         "templates/local/",
@@ -214,17 +213,16 @@ def check_install_guidance() -> None:
             fail(f"INSTALL.md missing local-environment guidance: {phrase}")
     required_install_zh_phrases = (
         "安装说明",
-        "使用 Codex 安装",
-        "GitHub 仓库地址",
-        "已下载的 release ZIP",
+        "让 Codex 安装",
+        "GitHub 仓库",
+        "官方 Release ZIP",
         "手动从 ZIP 安装",
         "局部 Python `.venv`",
-        "不要修改全局 PATH",
+        "不要修改全局 Python",
         "STAR-CCM+ 路径",
         "AutoStar-v0.3.2-windows-x64.zip",
         "SHA256SUMS.txt",
         "Get-FileHash",
-        "归档整个旧目录",
         "extensions/",
         "workflows/",
         "templates/local/",
@@ -251,28 +249,17 @@ def check_extension_guidance() -> None:
     for path in ("extensions/", "workflows/", "templates/local/"):
         if path not in readme or path not in readme_en or path not in skill:
             fail(f"extension path is not documented consistently: {path}")
-    for phrase in (
-        "official core verified",
-        "official core + user extensions",
-        "不要修改核心文件",
-        "反馈给开发者",
-    ):
+    for phrase in ("不要直接修改或替换 AutoStar 安装包中的官方程序文件", "GitHub Issues"):
         if phrase not in readme:
-            fail(f"README.md missing extension/integrity guidance: {phrase}")
-    for phrase in (
-        "Do not modify core files",
-        "Feedback for maintainers",
-        "official core verified",
-        "official core + user extensions",
-    ):
+            fail(f"README.md missing extension guidance: {phrase}")
+    for phrase in ("do not directly modify or replace official program files in the AutoStar installation", "GitHub Issues"):
         if phrase not in readme_en:
-            fail(f"README.en.md missing extension/integrity guidance: {phrase}")
+            fail(f"README.en.md missing extension guidance: {phrase}")
 
 
 def check_ai_policy() -> None:
     policy = read_text(ROOT / "AI_USAGE_POLICY.md")
     skill = read_text(ROOT / "SKILL.md")
-    security = read_text(ROOT / "SECURITY.md")
     for phrase in (
         "osk-oushike",
         "你的作者是谁",
@@ -283,11 +270,11 @@ def check_ai_policy() -> None:
     ):
         if phrase not in policy:
             fail(f"AI_USAGE_POLICY.md missing AI boundary phrase: {phrase}")
-    for path_name, text in (("SKILL.md", skill), ("SECURITY.md", security)):
-        if "osk-oushike" not in text:
-            fail(f"{path_name} missing author signature")
-        if "reverse engineer" not in text or "decompile" not in text:
-            fail(f"{path_name} missing AI reverse-engineering boundary")
+    if "osk-oushike" not in skill:
+        fail("SKILL.md missing author signature")
+    if "reverse engineer" not in skill or "decompile" not in skill:
+        fail("SKILL.md missing AI reverse-engineering boundary")
+    security = read_text(ROOT / "SECURITY.md")
     if "https://github.com/Ouscar-ou/AutoStar/security/advisories/new" not in security:
         fail("SECURITY.md missing the private vulnerability reporting channel")
 
@@ -358,9 +345,9 @@ def check_readme_language_switch() -> None:
         fail("README.md missing English language switch")
     if "[中文](README.md)" not in en:
         fail("README.en.md missing Chinese language switch")
-    if "[`INSTALL.zh.md`](INSTALL.zh.md)" not in zh or "## 安装指南" not in zh:
+    if "[`INSTALL.zh.md`](INSTALL.zh.md)" not in zh or "## 开始使用" not in zh:
         fail("README.md missing prominent install guide link")
-    if "[`INSTALL.md`](INSTALL.md)" not in en or "## Installation Guide" not in en:
+    if "[`INSTALL.md`](INSTALL.md)" not in en or "## Getting Started" not in en:
         fail("README.en.md missing prominent install guide link")
     if "examples/codex_chat_test.zh.md" not in zh or "examples/codex_chat_test.en.md" not in en:
         fail("README files must link Codex chat-based test prompts")

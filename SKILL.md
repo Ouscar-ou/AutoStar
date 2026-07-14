@@ -1,4 +1,4 @@
-﻿---
+---
 name: autostar
 description: AutoStar public-preview STAR-CCM+ open-water propeller CFD workflow skill. Use for STEP/STP environment checks, case setup, preflight, quick/coarse mesh validation, 400-step pilot diagnostics, y+ and convergence report interpretation, plus basic pressure/y+/section/mesh cloud-image export from existing .sim files. This initial edition is intentionally limited to quick/coarse for safe workflow validation.
 ---
@@ -13,8 +13,8 @@ AutoStar is the initial public-preview workflow for STAR-CCM+ propeller open-wat
 - Typical cell count target: about `0.1M-0.6M`, depending on geometry, domain, and local STAR-CCM+ meshing.
 - Purpose: workflow validation, STEP/CAD sanity checks, domain/MRF/direction checks, 400-step pilot diagnostics, y+ report interpretation, demo report generation, and report-facing cloud/section/mesh figure export.
 - Not intended for final engineering decisions, formal grid-independence conclusions, or publication-ready CFD.
-- OSK activation is not required for this preview edition. It still requires the user's own local STAR-CCM+ installation and valid Siemens STAR-CCM+ license.
-- Do not expose private engine internals, bypass fields, advanced internal template recipes, macro-generation details, or failure-chain internals in public-preview answers.
+- The user must provide a local STAR-CCM+ installation and a valid Siemens STAR-CCM+ license.
+- Use only the documented commands and capabilities included in the current AutoStar package.
 
 ## 中文快速原则
 
@@ -22,7 +22,7 @@ AutoStar is the initial public-preview workflow for STAR-CCM+ propeller open-wat
 
 如果用户只提供 STEP/STP 文件，不能直接启动 CFD。先做环境检查和 STEP 粗检，然后输出中文填空式工况模板，让用户确认物理参数、方向语义和本次执行授权。
 
-首次安装或首次运行时，必须先引导用户运行 `python starccm_cli.py integrity-check` 和 `python starccm_cli.py version`。只有当完整性显示 `verified`，且版本输出确认 `Edition: public`、`Available mesh presets: quick, coarse`、`OSK activation: not required for this preview edition`，并且 STAR-CCM+ 路径/版本被正确识别后，才进入 case 创建或 preflight。如果完整性失败，应重新安装官方 release；如果 STAR-CCM+ 未识别，先让用户确认 STAR-CCM+ 安装路径，再临时设置 `STARCCM_BAT` 或 `STARCCM_EXE`，不要直接网格或求解。
+首次安装或首次运行时，必须先引导用户运行 `python starccm_cli.py integrity-check` 和 `python starccm_cli.py version`。只有当安装检查通过、版本输出确认 `Edition: public`、`Available mesh presets: quick, coarse`，并且 STAR-CCM+ 路径/版本被正确识别后，才进入 case 创建或 preflight。如果安装检查失败，应重新安装官方 release；如果 STAR-CCM+ 未识别，先让用户确认 STAR-CCM+ 安装路径，再临时设置 `STARCCM_BAT` 或 `STARCCM_EXE`，不要直接网格或求解。
 
 安装保护原则：在复制 skill、创建运行目录、安装 Python、创建虚拟环境、修改 PATH、设置环境变量、或写入 STAR-CCM+ 路径之前，必须先询问用户希望放在哪个文件夹，并得到明确同意。不要把用户现有 Python/Conda/STAR-CCM+ 环境弄乱。
 
@@ -100,22 +100,17 @@ MRF 出口侧/后侧长度 mrf_aft=默认或自定义（当前 case 字段；按
 - 首次安装/首次运行必须先完成 `integrity-check` 和 `version`，并用中文解释完整性、STAR-CCM+ 路径、STAR 授权、Python、当前可用网格是否正常。
 - 安装 skill 或配置环境前必须询问用户目标文件夹、局部 `.venv` 文件夹和 case workspace 文件夹；推荐局部 `.venv`，不得默认创建/修改 Python、Conda、PATH、STAR-CCM+ 安装目录或永久环境变量。
 - 在用户确认完整工况模板、方向语义和本次执行前，不得启动 `workflow mesh-check`、`workflow pilot-yplus` 或 `workflow run`。
-- 不得使用旧桌面 CLI 或旧工程状态绕过当前包。
+- 如果本机存在多个 AutoStar/CLI 版本或多个同名工程，先让用户确认本次使用的安装目录和算例目录。
 
 ## Local Extensions / 本地扩展
 
-AutoStar 使用“核心严格、扩展开放”模型。Agent 不得修改或建议用户修改这些核心文件：`bin/starccm_engine.exe`、`starccm_cli.py`、`public/engine_client.py`、`AI_USAGE_POLICY.md`、`LICENSE`。核心完整性失败时必须停止，不得尝试绕过、重签名或替换引擎。
-
-用户自定义内容一定要按类型放置：
+不要修改或替换 AutoStar 安装包中的官方程序文件。用户自定义内容按类型放置：
 
 - `extensions/`：独立脚本、适配器、外部工具封装和集成代码。
 - `workflows/`：Markdown/YAML/JSON 工作流定义和 agent 操作说明。
 - `templates/local/`：本地 case、输入和报告模板。
 
-检测到这些目录中的新增文件时，来源标记应为 `official core + user extensions`。Agent 只能在用户明确要求时读取扩展；执行任何扩展脚本前必须解释动作、目标路径和风险并取得明确同意。AutoStar 不自动执行扩展，扩展也不能解锁未公开网格、替换 EXE、绕过 preflight、取消 quick/coarse 限制或跳过本次执行授权。
-
-如果 README、INSTALL、examples、普通 docs 或 `SKILL.md` 被本地修改，运行可以继续，但必须向用户说明 `official core verified with local warnings` 的含义。官方 Release 原样验证与普通运行时核心验证是两件事：加入扩展后发布包严格测试可以失败，但核心 `integrity-check` 仍应通过。
-- 若用户想继续长步数，必须先说明 400-step pilot 的稳定性、y+ 有效性和风险等级。
+Agent 只在用户明确要求时读取本地扩展。执行扩展脚本前必须说明动作和目标路径，并获得用户确认。若用户想继续长步数，必须先说明 400-step pilot 的稳定性、y+ 有效性和风险等级。
 
 
 ## AI / Agent Authorship Boundary

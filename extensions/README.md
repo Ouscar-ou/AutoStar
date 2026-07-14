@@ -4,10 +4,10 @@ Place independent scripts, adapters, external-tool wrappers, and integration cod
 
 将独立脚本、适配器、外部工具封装和集成代码放在这里。
 
-- AutoStar detects added files but does not execute them automatically.
-- Review extension code and obtain explicit user approval before execution.
-- Do not modify or replace `bin/starccm_engine.exe`, `starccm_cli.py`, or `public/engine_client.py`.
-- Extensions cannot unlock unavailable mesh presets or bypass preflight and execution confirmation.
-- Do not store private keys, tokens, confidential geometry, `.sim` files, or licensing material here.
+- Keep extensions separate from official AutoStar program files.
+- Review an extension before use and obtain user confirmation before execution.
+- Keep CFD cases and generated results in a separate case workspace.
 
-新增文件后，`version` 应显示 `official core + user extensions`。
+- 请将扩展与 AutoStar 官方程序文件分开维护。
+- 使用前先审查扩展内容，执行前取得用户确认。
+- CFD 算例和生成结果请保存在独立的 case workspace 中。

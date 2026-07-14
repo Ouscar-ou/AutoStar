@@ -3,7 +3,7 @@
 ## 1. 准备
 
 - 安装并确认 STAR-CCM+ 可正常启动。
-- 确认你有可用的 Siemens STAR-CCM+ 授权；当前预览包不提供 STAR 授权，也不需要 OSK 激活。
+- 确认你有可用的 Siemens STAR-CCM+ 授权；当前预览包不提供 STAR-CCM+ 软件或授权。
 - 准备 STEP/STP 螺旋桨几何。
 - 复制 `examples/preview_quick_case.yaml` 到你的运行目录并改名为 `case.yaml`。
 
@@ -27,8 +27,7 @@
 python ./starccm_cli.py version
 ```
 
-应看到 `Edition: public` 和 `Available mesh presets: quick, coarse`。
-还应看到 `OSK activation: not required for this preview edition` 和 STAR-CCM+ 可执行路径。
+应看到 `Edition: public`、`Available mesh presets: quick, coarse` 和 STAR-CCM+ 可执行路径。
 
 如果 STAR-CCM+ 路径没有被识别，请先确认 STAR-CCM+ 安装位置，再临时设置 `STARCCM_BAT` 或 `STARCCM_EXE`。不要直接运行网格或求解。
 
