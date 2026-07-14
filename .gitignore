@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# STAR-CCM+ generated files
+*.sim
+*.sim~
+*.trn
+*.rec
+*.sce
+*.stp
+*.step
+
+# Runtime outputs
+logs/
+results/
+postprocess_clouds/
+preflight_report.*
+run_report.md
+yplus_report.json
+project_state.json
+
+# Local secrets / licenses
+*.license.json
+*.key
+*.pem
+.env
+
+# Release leftovers
+*.backup_*.exe
+*_backup*.exe

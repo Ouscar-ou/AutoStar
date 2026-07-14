@@ -1,0 +1,49 @@
+﻿run_intent: smoke_test
+
+project:
+  name: preview_quick_example
+  sim_name: preview_quick_example.sim
+
+geometry:
+  stp: C:/path/to/propeller.stp
+  diameter: 250 mm
+  length: 53 mm
+
+domain:
+  shaft_axis: X
+  hub_axis: +X
+  outer_diameter: 1.25 m
+  upstream: 0.75 m
+  downstream: 1.75 m
+  mrf_diameter: 0.325 m
+  mrf_forward: 0.1625 m
+  mrf_aft: 0.1625 m
+  mrf_origin: [0, 0, 0]
+
+operating_condition:
+  velocity: 3.0 m/s
+  flow_direction: -X
+  inlet_side: +X
+  outlet_side: -X
+  rpm: 900 rpm
+  rotation_vector: +X
+  handedness: right
+  target_J: 0.8
+  fluid: Water
+  density: 998.2
+  viscosity: 0.001003
+  turbulence: K-Omega-SST
+
+mesh:
+  preset: quick
+  prism_mode: robust
+  yplus_report_target: 1
+
+solver:
+  pilot_iterations: 400
+  iterations: 400
+
+user_confirmation:
+  input_template_confirmed: true
+  axis_semantics_confirmed: true
+  execution_confirmed: true

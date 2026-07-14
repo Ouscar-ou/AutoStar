@@ -1,0 +1,203 @@
+{
+  "schema": "autostar-release-manifest-v2",
+  "required_core_paths": [
+    "AI_USAGE_POLICY.md",
+    "LICENSE",
+    "bin/starccm_engine.exe",
+    "public/engine_client.py",
+    "starccm_cli.py"
+  ],
+  "open_extension_roots": [
+    "extensions",
+    "templates/local",
+    "workflows"
+  ],
+  "files": [
+    {
+      "path": ".gitattributes",
+      "sha256": "bd6d431ac0903e036326a2eed0350515e09d4df84fde66be534b1e982e4c3099",
+      "bytes": 58,
+      "policy": "warning"
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "d93f2d767d17d8bc9858cc0aafba6742fdee265f8ef6e092c838a24138366d6b",
+      "bytes": 354,
+      "policy": "warning"
+    },
+    {
+      "path": "AI_USAGE_POLICY.md",
+      "sha256": "f169c472978ae071d99c3fc84cbb7375530c46e58175c9ee12bcb9cc0596d88f",
+      "bytes": 2087,
+      "policy": "required"
+    },
+    {
+      "path": "bin/README.md",
+      "sha256": "a22ddd5418615626fc66b821f76a590e5c8f32dbf0f2f947ef14a9cd96e61ba1",
+      "bytes": 1013,
+      "policy": "warning"
+    },
+    {
+      "path": "bin/starccm_engine.exe",
+      "sha256": "9115a03d97b7de673af8fb8526bc96517d4234e014e6654118ce3cd4b35506b6",
+      "bytes": 15887872,
+      "policy": "required"
+    },
+    {
+      "path": "docs/assets/result_clouds_preview.png",
+      "sha256": "e95c92f58cf0d0178da9396b25aedddeaa4e04044e45ba4ffdaa9c86809e8e69",
+      "bytes": 767603,
+      "policy": "warning"
+    },
+    {
+      "path": "docs/case_schema.md",
+      "sha256": "809a955f31082744e6462fc219370246d5f83fb1a6ada0b2351298358988b45d",
+      "bytes": 2062,
+      "policy": "warning"
+    },
+    {
+      "path": "docs/quickstart.md",
+      "sha256": "b9e3820d7bd55c7e256b8cee3e3d44a1179b707cf038ac62216d424c72633767",
+      "bytes": 2334,
+      "policy": "warning"
+    },
+    {
+      "path": "docs/troubleshooting.md",
+      "sha256": "77509560ccfe36810373f934593b130ff20f617446dbf37ce52b215732f5cbee",
+      "bytes": 2185,
+      "policy": "warning"
+    },
+    {
+      "path": "docs/workflow.md",
+      "sha256": "dee1f4ee70b04b18bcb853c3b3c9cbe605a5cbd0f8ffa6f1342236011c781875",
+      "bytes": 1596,
+      "policy": "warning"
+    },
+    {
+      "path": "examples/codex_chat_test.en.md",
+      "sha256": "c4a4951595ddf668aaf8def0d14f77accf5dbce4324ea5ed0dc70192009d3085",
+      "bytes": 4180,
+      "policy": "warning"
+    },
+    {
+      "path": "examples/codex_chat_test.zh.md",
+      "sha256": "a37f217a7283bf1279352a5db2b9b140822812136ad3280d519e929102fa1074",
+      "bytes": 4006,
+      "policy": "warning"
+    },
+    {
+      "path": "examples/preview_quick_case.yaml",
+      "sha256": "7c37e8af9ed8d439645febfb39a1389d47c7f2fd26bbb039b79f2bcb9694e453",
+      "bytes": 864,
+      "policy": "warning"
+    },
+    {
+      "path": "examples/README.md",
+      "sha256": "1c0f7e88c44828ba40a0490b08df7181dcf06dfa475b38762eb5d438dc982f14",
+      "bytes": 1045,
+      "policy": "warning"
+    },
+    {
+      "path": "extensions/README.md",
+      "sha256": "31e52513b89eacf0f86a7d97e6ba1e7aa230ceb85a407f76cd8be991f722b692",
+      "bytes": 744,
+      "policy": "warning"
+    },
+    {
+      "path": "INSTALL.md",
+      "sha256": "7fecb48544bdbe1570364636354a11ed5c38a1d480a8082c528be05f6b6f8579",
+      "bytes": 11276,
+      "policy": "warning"
+    },
+    {
+      "path": "INSTALL.zh.md",
+      "sha256": "29bd462a4410d8987e2e9d0b6949ab30158d53da41a4b730e9e70465e7e62ff1",
+      "bytes": 11050,
+      "policy": "warning"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "1a2b8003367f95f71b9af28ace1023f739aca9c553d88d187ea3a567aee1ccf8",
+      "bytes": 6642,
+      "policy": "required"
+    },
+    {
+      "path": "LICENSE.md",
+      "sha256": "1a2b8003367f95f71b9af28ace1023f739aca9c553d88d187ea3a567aee1ccf8",
+      "bytes": 6642,
+      "policy": "warning"
+    },
+    {
+      "path": "public/engine_client.py",
+      "sha256": "d1826f0873caf6bc105ced0676218a5178b712a1e2878d9d79a615550c9e5f38",
+      "bytes": 1564,
+      "policy": "required"
+    },
+    {
+      "path": "README.en.md",
+      "sha256": "9c7d3945f5ea226f3e2d348fca96ce5af589ce8e7884db4108a62a0ed8ddd4f0",
+      "bytes": 14440,
+      "policy": "warning"
+    },
+    {
+      "path": "README.md",
+      "sha256": "fea53f03817ad7e2d758018c203ee899faf6caf1366d7d3f177d83ec4b27d7a1",
+      "bytes": 13259,
+      "policy": "warning"
+    },
+    {
+      "path": "RELEASE_CHECKLIST.md",
+      "sha256": "58444a948449e815de7df7de2e812cfc5f00da5dfeeeed01862607267870be92",
+      "bytes": 1929,
+      "policy": "warning"
+    },
+    {
+      "path": "RELEASE_NOTES.md",
+      "sha256": "936a0af14fd39bb70ca737358d8facf917ea6ce6a1902dd6cb4e82d63eb1d128",
+      "bytes": 1228,
+      "policy": "warning"
+    },
+    {
+      "path": "RELEASE_VALIDATION.md",
+      "sha256": "ef560b9d6a8b3bc980f98697195d6dcba3bc2262e8d6b5a5dd8f1fc29631d036",
+      "bytes": 3621,
+      "policy": "warning"
+    },
+    {
+      "path": "SECURITY.md",
+      "sha256": "de01f5b27ff4e2bcf24ae29a12179d51711ac34b73051e9e525ec8b09e7f6db8",
+      "bytes": 2605,
+      "policy": "warning"
+    },
+    {
+      "path": "SKILL.md",
+      "sha256": "76589e3eac8808c3d8448e86c651dea2043e1d916fc494ad49e2832cac62fde4",
+      "bytes": 13221,
+      "policy": "warning"
+    },
+    {
+      "path": "starccm_cli.py",
+      "sha256": "6f1201447f683eebc4bb5d774c7e54a3eefb19089f5717fd98a81d50e93323b5",
+      "bytes": 2151,
+      "policy": "required"
+    },
+    {
+      "path": "templates/local/README.md",
+      "sha256": "129f4cd3f6e6ffc6f512ef8368514e9ba142af0c24bba0493cdc9eb1a9964c81",
+      "bytes": 593,
+      "policy": "warning"
+    },
+    {
+      "path": "tests/verify_public_preview_package.py",
+      "sha256": "dec59930e972f91f4cebd26efb7636eb05834617fa2b18c329aa95da1205a328",
+      "bytes": 34869,
+      "policy": "warning"
+    },
+    {
+      "path": "workflows/README.md",
+      "sha256": "4529f3be3afff4b42e2d7f850878381c964ccb4754049a336b949efa9a4c4394",
+      "bytes": 655,
+      "policy": "warning"
+    }
+  ]
+}
