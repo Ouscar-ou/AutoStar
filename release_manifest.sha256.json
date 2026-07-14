@@ -39,8 +39,8 @@
     },
     {
       "path": "bin/starccm_engine.exe",
-      "sha256": "9115a03d97b7de673af8fb8526bc96517d4234e014e6654118ce3cd4b35506b6",
-      "bytes": 15887872,
+      "sha256": "9092c4737e8954acf9553d769c9b597ad86cf8701ef52b5714cab87b3e1ee00c",
+      "bytes": 15887360,
       "policy": "required"
     },
     {
@@ -105,13 +105,13 @@
     },
     {
       "path": "INSTALL.md",
-      "sha256": "b166072d260c41771769658c415ee91638d41e5004ae8fd0c733456d26f63e91",
+      "sha256": "e6711c67493f1daf54102e900f1a35ca6666a2e3c962d3d391900811ae9f20b8",
       "bytes": 7128,
       "policy": "warning"
     },
     {
       "path": "INSTALL.zh.md",
-      "sha256": "65883dc77486ca0bea9bd567f810d486dacb625a31711dce770ce3ead0175c09",
+      "sha256": "6fc8680cc16d0b03e7402a8fdd4b83216137859044315bddb0520969afd16a39",
       "bytes": 6749,
       "policy": "warning"
     },
@@ -153,13 +153,13 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "sha256": "5c632df90bc95bbe1260a5f6c6f3241bf395a7d6d8946c25f0aa9e4bcc700acb",
-      "bytes": 1007,
+      "sha256": "277e9e20e65d168baa3c3400a30d431ac32305ec32530eb2edfb0b32b8eae8ee",
+      "bytes": 1470,
       "policy": "warning"
     },
     {
       "path": "RELEASE_VALIDATION.md",
-      "sha256": "2fbbe0bd075b2bf800491e889982316fd45412778309eb2b6ba06516e118aacc",
+      "sha256": "2bd20a4926f92721e2f9486027ff2ed485af5eec82ab0525ec3075d5f8f1de29",
       "bytes": 1543,
       "policy": "warning"
     },
@@ -189,7 +189,7 @@
     },
     {
       "path": "tests/verify_public_preview_package.py",
-      "sha256": "dc266e4e6f0b781c15cba1a36e48c0769932b6ac4b6b66dd30d2cf72b4cc1341",
+      "sha256": "52917cb73ea81fd7e4133be8173a848220493b2afde2675d1afc6eb0bef89c07",
       "bytes": 34674,
       "policy": "warning"
     },

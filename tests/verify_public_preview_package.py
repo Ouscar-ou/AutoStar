@@ -201,7 +201,7 @@ def check_install_guidance() -> None:
         "python -m venv",
         "Do not run `pip install`",
         "do not modify global Python",
-        "AutoStar-v0.3.2-windows-x64.zip",
+        "AutoStar-v0.3.3-windows-x64.zip",
         "extensions/",
         "workflows/",
         "templates/local/",
@@ -218,7 +218,7 @@ def check_install_guidance() -> None:
         "局部 Python `.venv`",
         "不要修改全局 Python",
         "STAR-CCM+ 路径",
-        "AutoStar-v0.3.2-windows-x64.zip",
+        "AutoStar-v0.3.3-windows-x64.zip",
         "extensions/",
         "workflows/",
         "templates/local/",
@@ -595,8 +595,8 @@ def check_pe_version_metadata() -> None:
     metadata = json.loads(completed.stdout)
     expected = {
         "ProductName": "AutoStar",
-        "ProductVersion": "0.3.2.0",
-        "FileVersion": "0.3.2.0",
+        "ProductVersion": "0.3.3.0",
+        "FileVersion": "0.3.3.0",
         "CompanyName": "OSK",
     }
     for key, value in expected.items():
@@ -697,8 +697,8 @@ def check_engine() -> None:
         fail("version must report verified signed-manifest integrity")
     if "Source: official core verified" not in version:
         fail("version must report the official-core source label")
-    if "AutoStar: 0.3.2-public-preview" not in version:
-        fail("version must report v0.3.2 public preview")
+    if "AutoStar: 0.3.3-public-preview" not in version:
+        fail("version must report v0.3.3 public preview")
     if "native_helper_missing" in version or "Local license:" in version:
         fail("version must not expose local activation-helper status in public preview")
     if ("Fr" + "ee/" + "Public") in version or ("Fr" + "ee " + "功能") in version:

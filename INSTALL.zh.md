@@ -18,7 +18,7 @@
 安装来源可以是：
 
 1. GitHub 仓库：`https://github.com/Ouscar-ou/AutoStar`
-2. 官方 Release ZIP：例如 `C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.2-windows-x64.zip`
+2. 官方 Release ZIP：例如 `C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.3-windows-x64.zip`
 3. 已解压或已 clone 的本地文件夹。
 
 需要用户确认的三个路径是：
@@ -52,14 +52,14 @@ C:/Users/<your-user-name>/Documents/autostar_runs
 如果已经下载 ZIP，可以把第一行改为：
 
 ```text
-请从这个本地 ZIP 安装 AutoStar：C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.2-windows-x64.zip。
+请从这个本地 ZIP 安装 AutoStar：C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.3-windows-x64.zip。
 ```
 
 当前版本通常不需要额外 Python 包。除非用户明确同意，不要运行 `pip install`、升级 pip、修改全局 PATH，或改动 STAR-CCM+ 安装目录。
 
 ## 3. 手动从 ZIP 安装
 
-1. 从官方 GitHub Release 下载 `AutoStar-v0.3.2-windows-x64.zip`。
+1. 从官方 GitHub Release 下载 `AutoStar-v0.3.3-windows-x64.zip`。
 2. 将 ZIP 解压到临时文件夹。
 3. 将包内容复制到用户确认的 skill 目录，例如：
 

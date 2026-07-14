@@ -1,5 +1,13 @@
 # Release Notes
 
+## 0.3.3 Public Preview
+
+- Simplifies ZIP installation by removing the separate `SHA256SUMS.txt` user step.
+- Keeps signed-manifest and bundled-runtime integrity verification after extraction.
+- Improves Chinese and English user-facing setup, interaction, and extension guidance.
+- Aligns the public package with protected-branch, protected-tag, and least-privilege release practices.
+- Rebuilds the public-only runtime with AutoStar `0.3.3.0` product metadata.
+
 ## 0.3.2 Public Preview
 
 - Introduces the AutoStar public preview for STAR-CCM+ open-water propeller CFD workflow validation.
