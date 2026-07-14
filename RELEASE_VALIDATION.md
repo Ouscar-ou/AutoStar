@@ -3,7 +3,7 @@
 Validation date: 2026-07-14
 Package: `autostar`
 Edition: `public`
-Version: `0.3.2-public-preview`
+Version: `0.3.3-public-preview`
 
 ## Validation Summary
 
@@ -23,7 +23,7 @@ Validated areas:
 - Python entry points compile and the bundled runtime responds to documented commands.
 - Cloud postprocessing supports dry-run validation and report-image export.
 - Public-package boundary, installation completeness, and modified-package behavior tests pass.
-- Executable product metadata identifies AutoStar, OSK, and version `0.3.2.0`.
+- Executable product metadata identifies AutoStar, OSK, and version `0.3.3.0`.
 - A fresh extraction of the generated Release ZIP passes the installation and runtime checks.
 
 ## Package Scope
