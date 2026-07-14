@@ -18,7 +18,7 @@ Before installation, choose the package source and confirm three local paths.
 The package source can be:
 
 1. GitHub repository: `https://github.com/Ouscar-ou/AutoStar`
-2. Official Release ZIP, for example `C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.3-windows-x64.zip`
+2. Official Release ZIP, for example `C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.4-windows-x64.zip`
 3. An extracted or cloned local folder.
 
 The user should confirm:
@@ -52,14 +52,14 @@ After installation, run integrity-check and version and explain the results.
 If the ZIP is already downloaded, replace the first line with:
 
 ```text
-Install AutoStar from this local ZIP: C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.3-windows-x64.zip.
+Install AutoStar from this local ZIP: C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.4-windows-x64.zip.
 ```
 
 The current preview normally requires no additional Python packages. Do not run `pip install`, upgrade pip, modify global PATH, or change the STAR-CCM+ installation directory without user approval.
 
 ## 3. Manual ZIP Installation
 
-1. Download `AutoStar-v0.3.3-windows-x64.zip` from the official GitHub Release.
+1. Download `AutoStar-v0.3.4-windows-x64.zip` from the official GitHub Release.
 2. Extract the ZIP to a temporary folder.
 3. Copy the package contents to the user-approved skill folder, for example:
 

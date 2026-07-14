@@ -10,7 +10,6 @@ AutoStar is the initial public-preview workflow for STAR-CCM+ propeller open-wat
 
 - Edition: `public` / public preview.
 - Available mesh presets: `quick`, `coarse` only.
-- Typical cell count target: about `0.1M-0.6M`, depending on geometry, domain, and local STAR-CCM+ meshing.
 - Purpose: workflow validation, STEP/CAD sanity checks, domain/MRF/direction checks, 400-step pilot diagnostics, y+ report interpretation, demo report generation, and report-facing cloud/section/mesh figure export.
 - Not intended for final engineering decisions, formal grid-independence conclusions, or publication-ready CFD.
 - The user must provide a local STAR-CCM+ installation and a valid Siemens STAR-CCM+ license.

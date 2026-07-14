@@ -201,7 +201,7 @@ def check_install_guidance() -> None:
         "python -m venv",
         "Do not run `pip install`",
         "do not modify global Python",
-        "AutoStar-v0.3.3-windows-x64.zip",
+        "AutoStar-v0.3.4-windows-x64.zip",
         "extensions/",
         "workflows/",
         "templates/local/",
@@ -218,7 +218,7 @@ def check_install_guidance() -> None:
         "局部 Python `.venv`",
         "不要修改全局 Python",
         "STAR-CCM+ 路径",
-        "AutoStar-v0.3.3-windows-x64.zip",
+        "AutoStar-v0.3.4-windows-x64.zip",
         "extensions/",
         "workflows/",
         "templates/local/",
@@ -507,6 +507,110 @@ user_confirmation:
     )
 
 
+def write_report_regression_fixture(project_dir: Path, step_path: Path) -> None:
+    legacy_geometry_key = "blade_" + "count"
+    state = {
+        "meta": {
+            "name": "public_report_regression",
+            "run_intent": "smoke_test",
+            "sim_file": str(project_dir / "public_report_regression.sim"),
+        },
+        "geometry": {
+            "imported": True,
+            "stp_path": str(step_path),
+            legacy_geometry_key: 4,
+        },
+        "domain": {
+            "propeller_diameter": 0.25,
+            "propeller_length": 0.053,
+            "outer": {"diameter": 1.25, "upstream": 0.75, "downstream": 1.75},
+            "mrf": {
+                "diameter": 0.325,
+                "forward_length": 0.1625,
+                "aft_length": 0.1625,
+            },
+        },
+        "mesh": {
+            "density": "coarse",
+            "preset_role": {
+                "name": "coarse",
+                "intent": "screening",
+                "label": "public-preview preliminary screening",
+                "formal_grade": False,
+            },
+        },
+        "physics": {
+            "fluid": {"name": "Water", "density": 998.2},
+            "turbulence": "K-Omega-SST",
+            "reference_values": {"velocity": 1.2887, "advance_coefficient": 0.2864},
+            "rotation": {"rpm": 1080.0},
+        },
+        "results": {"analysis": {"coefficients": {"J": 0.2864, "K_T": 0.2361}}},
+        "case_provenance": {
+            "step_hash_short": "fixture",
+            "case_file": str(project_dir / "case.yaml"),
+        },
+    }
+    artifacts = {
+        "project_state.json": state,
+        "environment_report.json": {
+            "python": {"version": "test", "executable": "python"},
+            "starccm": {"version": "test", "executable": "starccm+"},
+            "config_path": "test",
+        },
+        "mesh_report.json": {
+            "ok": True,
+            "density": "coarse",
+            "metrics": {
+                "final_cells": 74756,
+                "stationary_cells": 6120,
+                "rotating_cells": 68636,
+                "assessment": "review",
+            },
+            "mesh_parameters": {"prism": {}},
+            "quality_breakdown": {},
+        },
+        "surface_mesh_report.json": {"ok": True},
+        "prism_mesh_report.json": {"ok": True, "metrics": {"assessment": "review"}},
+        "yplus_report.json": {
+            "assessment": "review",
+            "global": {"mean": 2.235, "max": 73.21},
+            "distribution": {"status": "available_area_weighted_threshold"},
+        },
+        "preflight_report.json": {"derived": {}},
+    }
+    for name, payload in artifacts.items():
+        (project_dir / name).write_text(
+            json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+    results_dir = project_dir / "results"
+    results_dir.mkdir()
+    (results_dir / "results.json").write_text(
+        json.dumps(
+            {"Thrust": 298.294, "Torque": -9.25116, "Efficiency": -0.3674},
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (results_dir / "stability_report.json").write_text(
+        json.dumps(
+            {
+                "status": "fail",
+                "result_reliability": "fail",
+                "force_monitors_stable": True,
+                "residuals_below_warn_threshold": False,
+                "residuals": {"max_final": 0.158821},
+                "reasons": ["fixture residual gate"],
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
 def _engine_exe(root: Path = ROOT) -> Path:
     return root / "bin" / "starccm_engine.exe"
 
@@ -595,8 +699,8 @@ def check_pe_version_metadata() -> None:
     metadata = json.loads(completed.stdout)
     expected = {
         "ProductName": "AutoStar",
-        "ProductVersion": "0.3.3.0",
-        "FileVersion": "0.3.3.0",
+        "ProductVersion": "0.3.4.0",
+        "FileVersion": "0.3.4.0",
         "CompanyName": "OSK",
     }
     for key, value in expected.items():
@@ -697,8 +801,8 @@ def check_engine() -> None:
         fail("version must report verified signed-manifest integrity")
     if "Source: official core verified" not in version:
         fail("version must report the official-core source label")
-    if "AutoStar: 0.3.3-public-preview" not in version:
-        fail("version must report v0.3.3 public preview")
+    if "AutoStar: 0.3.4-public-preview" not in version:
+        fail("version must report v0.3.4 public preview")
     if "native_helper_missing" in version or "Local license:" in version:
         fail("version must not expose local activation-helper status in public preview")
     if ("Fr" + "ee/" + "Public") in version or ("Fr" + "ee " + "功能") in version:
@@ -707,6 +811,39 @@ def check_engine() -> None:
         tmp = Path(tmp_s)
         step = tmp / "dummy.stp"
         make_dummy_step(step)
+        report_dir = tmp / "report_regression"
+        report_dir.mkdir()
+        report_case = report_dir / "case.yaml"
+        write_case(report_case, step, "coarse")
+        write_report_regression_fixture(report_dir, step)
+        run_cmd(
+            [
+                sys.executable,
+                "starccm_cli.py",
+                "--project-dir",
+                str(report_dir),
+                "workflow",
+                "report",
+                "--case",
+                str(report_case),
+            ],
+            expect=0,
+        )
+        report_text = read_text(report_dir / "run_report.md")
+        removed_report_fields = (
+            "grid_" + "independence_done",
+            "final_" + "ready",
+            "blade_" + "count",
+        )
+        for field in removed_report_fields:
+            if field in report_text:
+                fail(f"public report exposed removed field: {field}")
+        if "Preview Result Blockers" not in report_text or "中文结论" not in report_text:
+            fail("public report is missing preview blockers or the Chinese recommendation")
+        migrated_state = json.loads(read_text(report_dir / "project_state.json"))
+        if ("blade_" + "count") in migrated_state.get("geometry", {}):
+            fail("public report did not remove legacy geometry-count metadata")
+
         for preset in ("quick", "coarse"):
             case = tmp / f"{preset}_case.yaml"
             write_case(case, step, preset)

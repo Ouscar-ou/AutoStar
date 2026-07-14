@@ -1,5 +1,12 @@
 # Release Notes
 
+## 0.3.4 Public Preview
+
+- Fixes automatic `run_report.md` generation for public-preview projects.
+- Removes unused geometry-count metadata from the public runtime and migrates older project states when reports are generated.
+- Removes fixed cell-count expectations; `quick` and `coarse` remain relative workflow-validation presets whose resulting counts depend on geometry and meshing.
+- Adds a compiled-engine regression test covering report generation from an existing solved-project state.
+
 ## 0.3.3 Public Preview
 
 - Simplifies ZIP installation by removing the separate `SHA256SUMS.txt` user step.
