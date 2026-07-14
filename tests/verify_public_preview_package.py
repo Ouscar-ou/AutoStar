@@ -843,6 +843,8 @@ def check_engine() -> None:
         migrated_state = json.loads(read_text(report_dir / "project_state.json"))
         if ("blade_" + "count") in migrated_state.get("geometry", {}):
             fail("public report did not remove legacy geometry-count metadata")
+        if migrated_state.get("geometry", {}).get("body_count") != 4:
+            fail("public report did not preserve the legacy CAD body count during migration")
 
         for preset in ("quick", "coarse"):
             case = tmp / f"{preset}_case.yaml"
