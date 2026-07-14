@@ -16,6 +16,6 @@ Before publishing:
 - [ ] Local-extension upgrade instructions cover `extensions/`, `workflows/`, and `templates/local/`.
 - [ ] Release metadata and package verification files are refreshed.
 - [ ] PE product/file metadata reports AutoStar, OSK, and the intended release version.
-- [ ] The final ZIP and external `SHA256SUMS.txt` are generated and independently checked.
+- [ ] The final ZIP installs cleanly and passes `integrity-check` from a fresh extraction.
 - [ ] The Git tag and GitHub Release point to the tested commit.
 - [ ] Repository visibility and private security-reporting settings are correct.

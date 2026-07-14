@@ -52,34 +52,22 @@ C:/Users/<your-user-name>/Documents/autostar_runs
 如果已经下载 ZIP，可以把第一行改为：
 
 ```text
-请从这个本地 ZIP 安装 AutoStar：C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.2-windows-x64.zip，并先使用同一 Release 中的 SHA256SUMS.txt 核对下载文件。
+请从这个本地 ZIP 安装 AutoStar：C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.2-windows-x64.zip。
 ```
 
 当前版本通常不需要额外 Python 包。除非用户明确同意，不要运行 `pip install`、升级 pip、修改全局 PATH，或改动 STAR-CCM+ 安装目录。
 
 ## 3. 手动从 ZIP 安装
 
-1. 从同一个官方 GitHub Release 下载 `AutoStar-v0.3.2-windows-x64.zip` 和 `SHA256SUMS.txt`。
-2. 解压前在 PowerShell 中核对 ZIP 的 SHA256：
-
-```powershell
-$downloadDir = "C:/Users/<your-user-name>/Downloads"
-$zip = Join-Path $downloadDir "AutoStar-v0.3.2-windows-x64.zip"
-$sums = Join-Path $downloadDir "SHA256SUMS.txt"
-$expected = ((Get-Content -LiteralPath $sums -Raw).Split(' ', [System.StringSplitOptions]::RemoveEmptyEntries))[0].ToLowerInvariant()
-$actual = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToLowerInvariant()
-if ($actual -ne $expected) { throw "AutoStar ZIP SHA256 mismatch: $actual != $expected" }
-"AutoStar ZIP SHA256 verified: $actual"
-```
-
-3. 将校验通过的 ZIP 解压到临时文件夹。
-4. 将包内容复制到用户确认的 skill 目录，例如：
+1. 从官方 GitHub Release 下载 `AutoStar-v0.3.2-windows-x64.zip`。
+2. 将 ZIP 解压到临时文件夹。
+3. 将包内容复制到用户确认的 skill 目录，例如：
 
 ```text
 C:/Users/<your-user-name>/.codex/skills/autostar
 ```
 
-5. 确认安装目录层级正确：
+4. 确认安装目录层级正确：
 
 ```text
 C:/Users/<your-user-name>/.codex/skills/autostar/SKILL.md
@@ -87,13 +75,13 @@ C:/Users/<your-user-name>/.codex/skills/autostar/SKILL.md
 
 不要多嵌套一层 `AutoStar/AutoStar/`。
 
-6. 可选：在用户指定的位置创建局部 Python 环境：
+5. 可选：在用户指定的位置创建局部 Python 环境：
 
 ```powershell
 python -m venv C:/Users/<your-user-name>/Documents/autostar_env/.venv
 ```
 
-7. 在 AutoStar 安装目录中运行检查：
+6. 在 AutoStar 安装目录中运行检查：
 
 ```powershell
 & C:/Users/<your-user-name>/Documents/autostar_env/.venv/Scripts/python.exe ./starccm_cli.py integrity-check
@@ -172,7 +160,7 @@ CFD 算例和结果应保存在独立的 case workspace 中，不要放在 skill
 - STAR-CCM+ 未识别：确认启动文件路径后，按第 5 节在当前会话设置路径。
 - 安装目录层级错误：确保 `SKILL.md` 直接位于 `.../.codex/skills/autostar/`。
 - Codex 没有识别 skill：新开任务或重启 Codex，再确认安装目录。
-- EXE 被安全软件拦截：确认下载来源和 ZIP SHA256 后，按本机安全策略处理。
+- EXE 被安全软件拦截：确认文件来自官方 GitHub Release 后，按本机安全策略处理。
 - STEP/STP 导入失败：先在 CAD 或 STAR-CCM+ 中确认单位、实体完整性和轴线方向。
 
 更完整的对话测试见 [`examples/codex_chat_test.zh.md`](examples/codex_chat_test.zh.md)。

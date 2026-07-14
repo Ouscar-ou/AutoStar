@@ -52,34 +52,22 @@ After installation, run integrity-check and version and explain the results.
 If the ZIP is already downloaded, replace the first line with:
 
 ```text
-Install AutoStar from this local ZIP: C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.2-windows-x64.zip, and first verify it against SHA256SUMS.txt from the same Release.
+Install AutoStar from this local ZIP: C:/Users/<your-user-name>/Downloads/AutoStar-v0.3.2-windows-x64.zip.
 ```
 
 The current preview normally requires no additional Python packages. Do not run `pip install`, upgrade pip, modify global PATH, or change the STAR-CCM+ installation directory without user approval.
 
 ## 3. Manual ZIP Installation
 
-1. Download `AutoStar-v0.3.2-windows-x64.zip` and `SHA256SUMS.txt` from the same official GitHub Release.
-2. Verify the ZIP SHA256 in PowerShell before extraction:
-
-```powershell
-$downloadDir = "C:/Users/<your-user-name>/Downloads"
-$zip = Join-Path $downloadDir "AutoStar-v0.3.2-windows-x64.zip"
-$sums = Join-Path $downloadDir "SHA256SUMS.txt"
-$expected = ((Get-Content -LiteralPath $sums -Raw).Split(' ', [System.StringSplitOptions]::RemoveEmptyEntries))[0].ToLowerInvariant()
-$actual = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToLowerInvariant()
-if ($actual -ne $expected) { throw "AutoStar ZIP SHA256 mismatch: $actual != $expected" }
-"AutoStar ZIP SHA256 verified: $actual"
-```
-
-3. Extract the verified ZIP to a temporary folder.
-4. Copy the package contents to the user-approved skill folder, for example:
+1. Download `AutoStar-v0.3.2-windows-x64.zip` from the official GitHub Release.
+2. Extract the ZIP to a temporary folder.
+3. Copy the package contents to the user-approved skill folder, for example:
 
 ```text
 C:/Users/<your-user-name>/.codex/skills/autostar
 ```
 
-5. Confirm the directory layout:
+4. Confirm the directory layout:
 
 ```text
 C:/Users/<your-user-name>/.codex/skills/autostar/SKILL.md
@@ -87,13 +75,13 @@ C:/Users/<your-user-name>/.codex/skills/autostar/SKILL.md
 
 Do not create an extra nested `AutoStar/AutoStar/` directory.
 
-6. Optionally create a local Python environment in a user-approved location:
+5. Optionally create a local Python environment in a user-approved location:
 
 ```powershell
 python -m venv C:/Users/<your-user-name>/Documents/autostar_env/.venv
 ```
 
-7. Run checks from the AutoStar installation folder:
+6. Run checks from the AutoStar installation folder:
 
 ```powershell
 & C:/Users/<your-user-name>/Documents/autostar_env/.venv/Scripts/python.exe ./starccm_cli.py integrity-check
@@ -172,7 +160,7 @@ Keep CFD cases and results in a separate case workspace, not in the skill instal
 - STAR-CCM+ is not found: confirm the launcher path and apply the current-session setting from section 5.
 - Directory layout is wrong: make sure `SKILL.md` is directly under `.../.codex/skills/autostar/`.
 - Codex does not detect the skill: open a new task or restart Codex, then recheck the installation folder.
-- Security software blocks the EXE: verify the download source and ZIP SHA256, then follow the local security policy.
+- Security software blocks the EXE: confirm that the file came from the official GitHub Release, then follow the local security policy.
 - STEP/STP import fails: check units, body integrity, and shaft alignment in CAD or STAR-CCM+.
 
 For a complete chat-based test, see [`examples/codex_chat_test.en.md`](examples/codex_chat_test.en.md).

@@ -202,8 +202,6 @@ def check_install_guidance() -> None:
         "Do not run `pip install`",
         "do not modify global Python",
         "AutoStar-v0.3.2-windows-x64.zip",
-        "SHA256SUMS.txt",
-        "Get-FileHash",
         "extensions/",
         "workflows/",
         "templates/local/",
@@ -221,8 +219,6 @@ def check_install_guidance() -> None:
         "不要修改全局 Python",
         "STAR-CCM+ 路径",
         "AutoStar-v0.3.2-windows-x64.zip",
-        "SHA256SUMS.txt",
-        "Get-FileHash",
         "extensions/",
         "workflows/",
         "templates/local/",
@@ -230,6 +226,9 @@ def check_install_guidance() -> None:
     for phrase in required_install_zh_phrases:
         if phrase not in install_zh:
             fail(f"INSTALL.zh.md missing Chinese install guidance: {phrase}")
+    for name, text in (("INSTALL.md", install), ("INSTALL.zh.md", install_zh)):
+        if "SHA256SUMS" in text or "Get-FileHash" in text:
+            fail(f"{name} should not require a separate ZIP checksum step")
     required_skill_phrases = (
         "skill_install_dir",
         "local_python_env_dir",

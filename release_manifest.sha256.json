@@ -105,14 +105,14 @@
     },
     {
       "path": "INSTALL.md",
-      "sha256": "34229141f715606d0cc98ee2c3429ea432004ecde2a91f3d3da6a4188436abe7",
-      "bytes": 7803,
+      "sha256": "b166072d260c41771769658c415ee91638d41e5004ae8fd0c733456d26f63e91",
+      "bytes": 7128,
       "policy": "warning"
     },
     {
       "path": "INSTALL.zh.md",
-      "sha256": "2712062d22371667fbc4c1ae4ca1a7b6016ea59299fffaa8fd7f4c4d62427778",
-      "bytes": 7446,
+      "sha256": "65883dc77486ca0bea9bd567f810d486dacb625a31711dce770ce3ead0175c09",
+      "bytes": 6749,
       "policy": "warning"
     },
     {
@@ -147,20 +147,20 @@
     },
     {
       "path": "RELEASE_CHECKLIST.md",
-      "sha256": "7ceefdfecf537718bfed36521c3dcf278b5b3fec5f8aa3745265efc86a4c616a",
+      "sha256": "5214888838813486707847778409cfe793ce5549befbd794fa2688f25c3a6d7e",
       "bytes": 1491,
       "policy": "warning"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "sha256": "bdd840f38bb13ce3e94be6947c954d8f7ae2851d3d54bac8072cbb8f8b84457d",
-      "bytes": 1009,
+      "sha256": "5c632df90bc95bbe1260a5f6c6f3241bf395a7d6d8946c25f0aa9e4bcc700acb",
+      "bytes": 1007,
       "policy": "warning"
     },
     {
       "path": "RELEASE_VALIDATION.md",
-      "sha256": "d37d2925991df1d469d53a94aac43e032e98bf71c11ec7ce5203c6a27a2eb624",
-      "bytes": 1539,
+      "sha256": "2fbbe0bd075b2bf800491e889982316fd45412778309eb2b6ba06516e118aacc",
+      "bytes": 1543,
       "policy": "warning"
     },
     {
@@ -189,8 +189,8 @@
     },
     {
       "path": "tests/verify_public_preview_package.py",
-      "sha256": "6ea8b1d040420f9400f962eaf35c5db4b84cd1e928d2c73f04f6380370b71c0e",
-      "bytes": 34559,
+      "sha256": "dc266e4e6f0b781c15cba1a36e48c0769932b6ac4b6b66dd30d2cf72b4cc1341",
+      "bytes": 34674,
       "policy": "warning"
     },
     {

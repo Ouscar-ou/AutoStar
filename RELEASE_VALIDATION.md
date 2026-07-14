@@ -24,7 +24,7 @@ Validated areas:
 - Cloud postprocessing supports dry-run validation and report-image export.
 - Public-package boundary, installation completeness, and modified-package behavior tests pass.
 - Executable product metadata identifies AutoStar, OSK, and version `0.3.2.0`.
-- The generated Release ZIP and external `SHA256SUMS.txt` are checked before publication.
+- A fresh extraction of the generated Release ZIP passes the installation and runtime checks.
 
 ## Package Scope
 

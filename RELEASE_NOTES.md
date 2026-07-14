@@ -9,6 +9,6 @@
 - Exports four-view propeller pressure/y+ images, center-plane pressure/velocity, mesh sections, and contact sheets from solved cases.
 - Includes Chinese and English installation guides and Codex chat-based test prompts.
 - Provides dedicated folders for user extensions, local workflows, and local templates.
-- Adds release-package verification and SHA256 download-check instructions.
+- Adds release-package verification and installation-completeness checks.
 
 Future releases will progressively introduce additional engineering mesh, grid-assessment, batch-analysis, automated-iteration, diagnostic, and reporting capabilities after validation.
