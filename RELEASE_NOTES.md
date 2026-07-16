@@ -1,5 +1,27 @@
 # Release Notes
 
+## 0.3.6 Public Preview
+
+- Makes workflow dry-run read-only: it no longer writes project/report files, updates execution records, or launches STAR-CCM+ and cloud postprocessing.
+- Adds `workflow continue --to-iterations` for explicit absolute-target continuation without geometry import, domain creation, or remeshing.
+- Prevents internal workflow child commands from repeatedly launching cloud export; a successful top-level workflow triggers at most one automatic image export.
+- Separates prism-design y+ from result-acceptance y+ and makes both public y+ commands use one persisted report and one area-weighted assessment.
+- Fixes STAR-CCM+ 18.04 scene compilation and marks successfully retried failures as resolved instead of retaining them as active report risks.
+- Restores populated preflight derived values, clarifies inflow-diameter versus relative-chord Reynolds numbers, and reports residual plateaus with a mesh-repair recommendation.
+- Unifies mesh-quality output so unavailable threshold counts are not reported as zero and STAR mesher/prism risk signals remain visible in the canonical gate.
+- Keeps a risky 400-step pilot available for diagnosis while blocking longer continuation until the user explicitly confirms the mesh risk.
+- Expands `results/results.json` with stable coefficients, sign conventions, stability, mesh/y+ gates, and recommended-use fields while preserving raw report values.
+- Warns when wall-resolved prism-design y+ is unresolved or differs from the result-acceptance target.
+- Expands regression coverage for dry-run immutability, safe continuation, derived preflight fields, resolved failures, version metadata, and public-only boundaries.
+
+## 0.3.5 Public Preview
+
+- Corrects STAR mesh-quality field normalization so measured cell quality, volume change, skewness angle, and face validity cannot be silently skipped.
+- Makes the default 400-step smoke-test solve a real report-only pilot that writes pilot y+ diagnostics and pauses before any longer continuation.
+- Records the completed STAR iteration count and compares it with the requested target before a continuation run.
+- Removes the report-facing visibility-switch hint and keeps public report details fixed to the public view.
+- Corrects Chinese headings and labels in generated workflow reports.
+
 ## 0.3.4 Public Preview
 
 - Fixes automatic `run_report.md` generation for public-preview projects.

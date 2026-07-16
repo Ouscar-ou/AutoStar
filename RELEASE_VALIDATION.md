@@ -1,9 +1,9 @@
 # AutoStar Release Validation
 
-Validation date: 2026-07-14
+Validation date: 2026-07-15
 Package: `autostar`
 Edition: `public`
-Version: `0.3.4-public-preview`
+Version: `0.3.6-public-preview`
 
 ## Validation Summary
 
@@ -22,8 +22,14 @@ Validated areas:
 - Installation, first-case, direction-confirmation, and local-extension guidance are present in Chinese and English.
 - Python entry points compile and the bundled runtime responds to documented commands.
 - Cloud postprocessing supports dry-run validation and report-image export.
+- Workflow dry-run leaves project files unchanged and never auto-launches cloud export.
+- Safe continuation uses an absolute target and does not repeat geometry/domain/mesh stages.
+- Mesh-risk continuation is blocked without explicit confirmation and remains labeled diagnostic-only when confirmed.
+- Machine-readable results include signed/absolute coefficients, stability, mesh quality, y+, and recommended-use fields.
+- Canonical y+ reporting separates prism design and result acceptance targets.
+- Preflight derived fields, failure resolution, and residual-plateau recommendations are covered.
 - Public-package boundary, installation completeness, and modified-package behavior tests pass.
-- Executable product metadata identifies AutoStar, OSK, and version `0.3.4.0`.
+- Executable product metadata identifies AutoStar, OSK, and version `0.3.6.0`.
 - A fresh extraction of the generated Release ZIP passes the installation and runtime checks.
 
 ## Package Scope

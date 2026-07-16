@@ -37,7 +37,7 @@ operating_condition:
 mesh:
   preset: quick
   prism_mode: robust
-  yplus_report_target: 1
+  yplus_acceptance_target: 1
 
 solver:
   pilot_iterations: 400

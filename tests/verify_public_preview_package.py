@@ -124,6 +124,20 @@ def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="strict")
 
 
+def file_snapshot(root: Path) -> dict[str, tuple[int, int, str]]:
+    if not root.exists():
+        return {}
+    return {
+        path.relative_to(root).as_posix(): (
+            path.stat().st_size,
+            path.stat().st_mtime_ns,
+            hashlib.sha256(path.read_bytes()).hexdigest(),
+        )
+        for path in root.rglob("*")
+        if path.is_file()
+    }
+
+
 def iter_text_files(include_tests: bool = True):
     for path in ROOT.rglob("*"):
         if not path.is_file():
@@ -201,7 +215,7 @@ def check_install_guidance() -> None:
         "python -m venv",
         "Do not run `pip install`",
         "do not modify global Python",
-        "AutoStar-v0.3.4-windows-x64.zip",
+        "AutoStar-v0.3.6-windows-x64.zip",
         "extensions/",
         "workflows/",
         "templates/local/",
@@ -218,7 +232,7 @@ def check_install_guidance() -> None:
         "局部 Python `.venv`",
         "不要修改全局 Python",
         "STAR-CCM+ 路径",
-        "AutoStar-v0.3.4-windows-x64.zip",
+        "AutoStar-v0.3.6-windows-x64.zip",
         "extensions/",
         "workflows/",
         "templates/local/",
@@ -292,6 +306,7 @@ def run_cmd(
     cwd: Path = ROOT,
     expect: int | None = 0,
     timeout: int = 180,
+    env_overrides: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess[str]:
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"
@@ -305,6 +320,8 @@ def run_cmd(
     env["AUTOSTAR_" + "EDITION"] = "p" + "ro"
     env["AUTOSTAR_" + "TIER"] = "p" + "ro"
     env["STARCCM_REQUIRE_" + "LICENSE"] = "0"
+    if env_overrides:
+        env.update(env_overrides)
     completed = subprocess.run(
         args,
         cwd=str(cwd),
@@ -458,6 +475,25 @@ def make_dummy_step(path: Path) -> None:
     )
 
 
+def make_offset_envelope_step(path: Path) -> None:
+    path.write_text(
+        "ISO-10303-21;\n"
+        "HEADER;\n"
+        "FILE_DESCRIPTION(('Offset envelope STEP for release validation'),'2;1');\n"
+        "FILE_NAME('offset_propeller.stp','2026-07-16T00:00:00',('OSK'),('OSK'),'','','');\n"
+        "FILE_SCHEMA(('AUTOMOTIVE_DESIGN_CC2'));\n"
+        "ENDSEC;\n"
+        "DATA;\n"
+        "#1=CARTESIAN_POINT('',(-48.178,0.,0.));\n"
+        "#2=CARTESIAN_POINT('',(75.001,0.,0.));\n"
+        "#3=CARTESIAN_POINT('',(0.,119.621,0.));\n"
+        "#4=CARTESIAN_POINT('',(0.,-119.621,0.));\n"
+        "ENDSEC;\n"
+        "END-ISO-10303-21;\n",
+        encoding="ascii",
+    )
+
+
 def write_case(path: Path, step_path: Path, preset: str) -> None:
     step = step_path.as_posix()
     path.write_text(
@@ -494,7 +530,7 @@ operating_condition:
 mesh:
   preset: {preset}
   prism_mode: robust
-  yplus_report_target: 1
+  yplus_acceptance_target: 1
 solver:
   pilot_iterations: 400
   iterations: 400
@@ -521,6 +557,7 @@ def write_report_regression_fixture(project_dir: Path, step_path: Path) -> None:
             legacy_geometry_key: 4,
         },
         "domain": {
+            "created": True,
             "propeller_diameter": 0.25,
             "propeller_length": 0.053,
             "outer": {"diameter": 1.25, "upstream": 0.75, "downstream": 1.75},
@@ -531,6 +568,7 @@ def write_report_regression_fixture(project_dir: Path, step_path: Path) -> None:
             },
         },
         "mesh": {
+            "generated": True,
             "density": "coarse",
             "preset_role": {
                 "name": "coarse",
@@ -540,12 +578,20 @@ def write_report_regression_fixture(project_dir: Path, step_path: Path) -> None:
             },
         },
         "physics": {
+            "configured": True,
             "fluid": {"name": "Water", "density": 998.2},
             "turbulence": "K-Omega-SST",
             "reference_values": {"velocity": 1.2887, "advance_coefficient": 0.2864},
             "rotation": {"rpm": 1080.0},
         },
-        "results": {"analysis": {"coefficients": {"J": 0.2864, "K_T": 0.2361}}},
+        "results": {
+            "data": {"Thrust": 298.294, "Torque": -9.25116, "Efficiency": -0.3674},
+            "analysis": {"coefficients": {"J": 0.2864, "K_T": 0.2361}},
+        },
+        "reports": {"setup_complete": True},
+        # Older public projects may have a completed run but a missing/zero
+        # iterations_completed field; the runtime must recover max_iterations.
+        "solver": {"run_status": "completed", "iterations_completed": 0, "max_iterations": 1000},
         "case_provenance": {
             "step_hash_short": "fixture",
             "case_file": str(project_dir / "case.yaml"),
@@ -574,8 +620,22 @@ def write_report_regression_fixture(project_dir: Path, step_path: Path) -> None:
         "prism_mesh_report.json": {"ok": True, "metrics": {"assessment": "review"}},
         "yplus_report.json": {
             "assessment": "review",
+            "prism_design_yplus": 6.0,
+            "yplus_acceptance_target": 1.0,
+            "target_yplus": 1.0,
             "global": {"mean": 2.235, "max": 73.21},
             "distribution": {"status": "available_area_weighted_threshold"},
+        },
+        "pilot_yplus_report.json": {
+            "iterations": 400,
+            "decision": "early_not_converged_continue",
+            "stability": {"max_final_residual": 0.166},
+        },
+        "starccm_failure_report.json": {
+            "status": "resolved",
+            "stage": "extractreports",
+            "classified_error": {"type": "macro_compile_error"},
+            "log_path": "resolved.log",
         },
         "preflight_report.json": {"derived": {}},
     }
@@ -584,6 +644,7 @@ def write_report_regression_fixture(project_dir: Path, step_path: Path) -> None:
             json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
             encoding="utf-8",
         )
+    (project_dir / "public_report_regression.sim").write_bytes(b"fixture")
     results_dir = project_dir / "results"
     results_dir.mkdir()
     (results_dir / "results.json").write_text(
@@ -649,6 +710,13 @@ def check_direct_engine_contract() -> None:
         if re.search(rf"(?m)^\s+{re.escape(command)}", help_out):
             fail(f"direct engine exposes non-public command: {command}")
 
+    workflow_help = run_cmd([str(engine), "workflow", "--help"]).stdout
+    if "continue" not in workflow_help:
+        fail("workflow help is missing the safe continuation command")
+    continue_help = run_cmd([str(engine), "workflow", "continue", "--help"]).stdout
+    if "--to-iterations" not in continue_help or "--dry-run" not in continue_help or "--confirm-mesh-risk" not in continue_help:
+        fail("workflow continue help is missing its target, read-only planning, or mesh-risk confirmation option")
+
     domain_help = run_cmd([str(engine), "domain", "create", "--help"]).stdout
     if "--preset [quick|coarse]" not in domain_help:
         fail("domain create must expose exactly the quick/coarse preset choice")
@@ -699,8 +767,8 @@ def check_pe_version_metadata() -> None:
     metadata = json.loads(completed.stdout)
     expected = {
         "ProductName": "AutoStar",
-        "ProductVersion": "0.3.4.0",
-        "FileVersion": "0.3.4.0",
+        "ProductVersion": "0.3.6.0",
+        "FileVersion": "0.3.6.0",
         "CompanyName": "OSK",
     }
     for key, value in expected.items():
@@ -801,8 +869,8 @@ def check_engine() -> None:
         fail("version must report verified signed-manifest integrity")
     if "Source: official core verified" not in version:
         fail("version must report the official-core source label")
-    if "AutoStar: 0.3.4-public-preview" not in version:
-        fail("version must report v0.3.4 public preview")
+    if "AutoStar: 0.3.6-public-preview" not in version:
+        fail("version must report v0.3.6 public preview")
     if "native_helper_missing" in version or "Local license:" in version:
         fail("version must not expose local activation-helper status in public preview")
     if ("Fr" + "ee/" + "Public") in version or ("Fr" + "ee " + "功能") in version:
@@ -830,6 +898,32 @@ def check_engine() -> None:
             expect=0,
         )
         report_text = read_text(report_dir / "run_report.md")
+        required_report_text = (
+            "Note / 说明",
+            "## Mesh / 网格",
+            "## Stability And Convergence / 稳定性与收敛",
+            "## Artifacts / 输出文件",
+            "Prism design y+ / 首层设计目标",
+            "Acceptance target y+ / 验收目标",
+            "Residual plateau status",
+        )
+        for phrase in required_report_text:
+            if phrase not in report_text:
+                fail(f"public report is missing clean user-facing text: {phrase!r}")
+        report_mojibake = ("璇存槑", "缃戞牸", "绋冲畾鎬т笌鏀舵暃", "杈撳嚭鏂囦欢")
+        for marker in report_mojibake:
+            if marker in report_text:
+                fail(f"compiled public report contains mojibake: {marker!r}")
+        visibility_hint = "report." + "visibility_mode"
+        if visibility_hint in report_text or "set " + visibility_hint in report_text:
+            fail("public report exposed an internal visibility-switch hint")
+        hidden_parameter_notices = (
+            "Internal template parameters are unavailable in this public-preview report.",
+            "内部模板参数不在当前公开预览报告中提供。",
+        )
+        for notice in hidden_parameter_notices:
+            if notice in report_text:
+                fail(f"public report exposed an unnecessary hidden-parameter notice: {notice!r}")
         removed_report_fields = (
             "grid_" + "independence_done",
             "final_" + "ready",
@@ -840,11 +934,316 @@ def check_engine() -> None:
                 fail(f"public report exposed removed field: {field}")
         if "Preview Result Blockers" not in report_text or "中文结论" not in report_text:
             fail("public report is missing preview blockers or the Chinese recommendation")
+        if "macro_compile_error" in report_text or "resolved.log" in report_text:
+            fail("resolved postprocessing failure still pollutes the active run report")
+        if "repair_mesh_before_long_run" not in report_text:
+            fail("mesh-risk report did not recommend mesh repair before a long run")
+        if "Mesh quality gate:" not in report_text or "diagnostic-only" not in report_text:
+            fail("public report did not label the mesh-risk run as diagnostic-only")
         migrated_state = json.loads(read_text(report_dir / "project_state.json"))
         if ("blade_" + "count") in migrated_state.get("geometry", {}):
             fail("public report did not remove legacy geometry-count metadata")
         if migrated_state.get("geometry", {}).get("body_count") != 4:
             fail("public report did not preserve the legacy CAD body count during migration")
+
+        analysis_output = run_cmd(
+            [
+                sys.executable,
+                "starccm_cli.py",
+                "--project-dir",
+                str(report_dir),
+                "results",
+                "analyze",
+            ],
+            expect=0,
+            env_overrides={"STARCCM_AUTO_POSTPROCESS_CLOUDS": "0"},
+        ).stdout
+        enriched_results = json.loads(read_text(report_dir / "results" / "results.json"))
+        for field in (
+            "J",
+            "K_T",
+            "K_Q_signed",
+            "K_Q_abs",
+            "10K_Q_signed",
+            "10K_Q_abs",
+            "eta_signed",
+            "eta_abs",
+            "torque_sign_convention",
+            "stability_status",
+            "result_reliability",
+            "mesh_quality_gate",
+            "yplus_assessment",
+            "recommended_use",
+        ):
+            if field not in enriched_results:
+                fail(f"results.json is missing stable machine-readable field: {field}")
+        if enriched_results["mesh_quality_gate"] != "review":
+            fail(f"results.json mesh quality gate is incorrect: {enriched_results['mesh_quality_gate']!r}")
+
+        continue_before = file_snapshot(report_dir)
+        blocked_continue = run_cmd(
+            [
+                sys.executable,
+                "starccm_cli.py",
+                "--project-dir",
+                str(report_dir),
+                "workflow",
+                "continue",
+                "--case",
+                str(report_case),
+                "--to-iterations",
+                "1500",
+                "--dry-run",
+                "--confirmed-execution",
+            ],
+            expect=None,
+        )
+        if blocked_continue.returncode == 0 or "--confirm-mesh-risk" not in blocked_continue.stdout:
+            fail("workflow continue did not block a mesh-risk long run without explicit confirmation")
+        continue_output = run_cmd(
+            [
+                sys.executable,
+                "starccm_cli.py",
+                "--project-dir",
+                str(report_dir),
+                "workflow",
+                "continue",
+                "--case",
+                str(report_case),
+                "--to-iterations",
+                "1500",
+                "--dry-run",
+                "--confirmed-execution",
+                "--confirm-mesh-risk",
+            ],
+            expect=0,
+        ).stdout
+        continue_after = file_snapshot(report_dir)
+        if continue_after != continue_before:
+            fail("workflow continue --dry-run modified the existing project")
+        if "--max-iterations 1500" not in continue_output or "additional=500" not in continue_output:
+            fail("continuation dry-run did not plan the requested absolute target")
+        forbidden_continue_steps = (" geometry run ", " domain create ", " mesh generate ", " physics setup ", " report setup ")
+        if any(step_name in continue_output for step_name in forbidden_continue_steps):
+            fail(f"continuation plan attempted to rebuild the case:\n{continue_output}")
+        if "[postprocess-clouds]" in continue_output:
+            fail("continuation dry-run triggered cloud postprocessing")
+        rejected = run_cmd(
+            [
+                sys.executable,
+                "starccm_cli.py",
+                "--project-dir",
+                str(report_dir),
+                "workflow",
+                "continue",
+                "--case",
+                str(report_case),
+                "--to-iterations",
+                "1000",
+                "--dry-run",
+                "--confirmed-execution",
+                "--confirm-mesh-risk",
+            ],
+            expect=None,
+        )
+        if rejected.returncode == 0 or "must exceed completed iterations" not in rejected.stdout:
+            fail("continuation accepted a target at or below the completed iteration count")
+
+        pilot_dir = tmp / "pilot_dry_run"
+        pilot_dir.mkdir()
+        pilot_case = pilot_dir / "case.yaml"
+        write_case(pilot_case, step, "coarse")
+        pilot_before = file_snapshot(pilot_dir)
+        pilot_output = run_cmd(
+            [
+                sys.executable,
+                "starccm_cli.py",
+                "--project-dir",
+                str(pilot_dir),
+                "workflow",
+                "run",
+                "--case",
+                str(pilot_case),
+                "--dry-run",
+                "--confirmed-execution",
+            ],
+            expect=0,
+        ).stdout
+        if "Pilot y+ mode / y+ 试算模式: report-only" not in pilot_output:
+            fail("smoke-test auto mode did not resolve to report-only pilot")
+        solver_lines = [
+            line for line in pilot_output.splitlines()
+            if " solver run " in line and "--max-iterations" in line
+        ]
+        if len(solver_lines) != 1 or "--max-iterations 400" not in solver_lines[0]:
+            fail(f"smoke-test dry run must plan exactly one 400-step solve: {solver_lines!r}")
+        pilot_after = file_snapshot(pilot_dir)
+        if pilot_after != pilot_before:
+            fail(f"workflow run --dry-run modified project files: before={pilot_before}, after={pilot_after}")
+        if "[postprocess-clouds]" in pilot_output or (pilot_dir / "postprocess_clouds").exists():
+            fail("workflow run --dry-run triggered automatic cloud postprocessing")
+
+        required_pilot_output = run_cmd(
+            [
+                sys.executable,
+                "starccm_cli.py",
+                "--project-dir",
+                str(pilot_dir),
+                "workflow",
+                "run",
+                "--case",
+                str(pilot_case),
+                "--force",
+                "--pilot-yplus",
+                "require",
+                "--dry-run",
+                "--confirmed-execution",
+            ],
+            expect=0,
+        ).stdout
+        required_solver_lines = [
+            line for line in required_pilot_output.splitlines()
+            if " solver run " in line and "--max-iterations" in line
+        ]
+        if len(required_solver_lines) != 1 or "--max-iterations 400" not in required_solver_lines[0]:
+            fail(f"required pilot must not duplicate the 400-step solver run: {required_solver_lines!r}")
+
+        default_dir = tmp / "default_domain_resolution"
+        default_dir.mkdir()
+        default_case = default_dir / "case.yaml"
+        write_case(default_case, step, "coarse")
+        default_text = default_case.read_text(encoding="utf-8")
+        for line in (
+            "  outer_diameter: 1.25 m\n",
+            "  upstream: 0.75 m\n",
+            "  downstream: 1.75 m\n",
+            "  mrf_diameter: 0.325 m\n",
+            "  mrf_forward: 0.1625 m\n",
+            "  mrf_aft: 0.1625 m\n",
+        ):
+            default_text = default_text.replace(line, "")
+        default_text = default_text.replace("solver:\n", "np: 8\nsolver:\n")
+        default_case.write_text(default_text, encoding="utf-8")
+        default_preflight_output = run_cmd(
+            [
+                sys.executable,
+                "starccm_cli.py",
+                "--project-dir",
+                str(default_dir),
+                "workflow",
+                "preflight",
+                "--case",
+                str(default_case),
+            ],
+            expect=0,
+        ).stdout
+        if "Preflight: pass" not in default_preflight_output and "Preflight: warn" not in default_preflight_output:
+            fail("default-domain case should pass or warn preflight")
+        default_report = json.loads((default_dir / "preflight_report.json").read_text(encoding="utf-8-sig"))
+        default_derived = default_report.get("derived", {})
+        expected_defaults = {
+            "outer_diameter_m": 1.25,
+            "mrf_diameter_m": 0.275,
+            "mrf_forward_m": 0.0318,
+            "mrf_aft_m": 0.0318,
+        }
+        for key, expected in expected_defaults.items():
+            actual = default_derived.get(key)
+            if actual is None or abs(float(actual) - expected) > 1e-9:
+                fail(f"default-domain resolution mismatch for {key}: {actual!r} != {expected!r}")
+        if (default_derived.get("domain_defaults") or {}).get("source") != "auto_default_step_envelope":
+            fail("preflight did not record STEP-envelope-aware default-domain provenance")
+        if default_derived.get("refinement_enabled") is not False:
+            fail("quick/coarse default refinement policy must remain explicitly disabled")
+        missing_default_failures = {
+            "mrf_diameter_required",
+            "mrf_upstream_required",
+            "mrf_downstream_required",
+        }
+        if any(
+            check.get("id") in missing_default_failures and check.get("level") == "fail"
+            for check in default_report.get("checks", [])
+        ):
+            fail("auto-default MRF dimensions were still treated as missing")
+        default_plan = run_cmd(
+            [
+                sys.executable,
+                "starccm_cli.py",
+                "--project-dir",
+                str(default_dir),
+                "workflow",
+                "run",
+                "--case",
+                str(default_case),
+                "--dry-run",
+                "--confirmed-execution",
+            ],
+            expect=0,
+        ).stdout
+        planned_commands = [line for line in default_plan.splitlines() if line.lstrip().startswith("$")]
+        parallel_commands = [line for line in planned_commands if "results analyze" not in line]
+        if not parallel_commands or any("--np 8" not in line for line in parallel_commands):
+            fail(f"root np alias was not preserved across the workflow plan: {planned_commands!r}")
+
+        envelope_dir = tmp / "directional_mrf_envelope"
+        envelope_dir.mkdir()
+        envelope_step = envelope_dir / "offset_envelope.stp"
+        make_offset_envelope_step(envelope_step)
+        auto_case = envelope_dir / "auto_case.yaml"
+        write_case(auto_case, envelope_step, "coarse")
+        auto_text = auto_case.read_text(encoding="utf-8")
+        auto_text = auto_text.replace("  length: 53 mm\n", "  length: 125 mm\n")
+        auto_text = auto_text.replace("  mrf_diameter: 0.325 m\n", "").replace("  mrf_forward: 0.1625 m\n", "").replace("  mrf_aft: 0.1625 m\n", "")
+        auto_case.write_text(auto_text, encoding="utf-8")
+        auto_preflight = run_cmd(
+            [sys.executable, "starccm_cli.py", "--project-dir", str(envelope_dir), "workflow", "preflight", "--case", str(auto_case)],
+            expect=0,
+        ).stdout
+        if "Preflight: warn" not in auto_preflight and "Preflight: pass" not in auto_preflight:
+            fail("envelope-aware MRF defaults should pass or warn only on the y+ check")
+        auto_report = json.loads((envelope_dir / "preflight_report.json").read_text(encoding="utf-8-sig"))
+        auto_derived = auto_report.get("derived", {})
+        if abs(float(auto_derived.get("mrf_forward_m")) - 0.08) > 1e-9:
+            fail(f"directional default mrf_forward was not resolved to 0.08 m: {auto_derived.get('mrf_forward_m')!r}")
+        if abs(float(auto_derived.get("mrf_aft_m")) - 0.075) > 1e-9:
+            fail(f"directional default mrf_aft was not preserved at 0.075 m: {auto_derived.get('mrf_aft_m')!r}")
+        if (auto_derived.get("domain_defaults") or {}).get("source") != "auto_default_step_envelope":
+            fail("directional MRF defaults did not record STEP-envelope provenance")
+        auto_gate = [check for check in auto_report.get("checks", []) if check.get("id") == "step_mrf_envelope_estimate"]
+        if not auto_gate or auto_gate[-1].get("level") != "pass":
+            fail(f"directional MRF defaults did not pass the hard envelope gate: {auto_gate!r}")
+
+        tight_dir = tmp / "tight_mrf_envelope"
+        tight_dir.mkdir()
+        tight_case = tight_dir / "tight_case.yaml"
+        write_case(tight_case, envelope_step, "coarse")
+        tight_text = tight_case.read_text(encoding="utf-8").replace("  length: 53 mm\n", "  length: 125 mm\n")
+        tight_text = tight_text.replace("  mrf_diameter: 0.325 m\n", "  mrf_diameter: 0.275 m\n").replace("  mrf_forward: 0.1625 m\n", "  mrf_forward: 0.075 m\n").replace("  mrf_aft: 0.1625 m\n", "  mrf_aft: 0.075 m\n")
+        tight_case.write_text(tight_text, encoding="utf-8")
+        tight_result = run_cmd(
+            [sys.executable, "starccm_cli.py", "--project-dir", str(tight_dir), "workflow", "preflight", "--case", str(tight_case)],
+            expect=None,
+        )
+        if tight_result.returncode == 0:
+            fail("MRF forward length equal to the STEP positive extent was incorrectly accepted")
+        tight_report = json.loads((tight_dir / "preflight_report.json").read_text(encoding="utf-8-sig"))
+        tight_gate = [check for check in tight_report.get("checks", []) if check.get("id") == "step_mrf_envelope_estimate"]
+        if not tight_gate or tight_gate[-1].get("level") != "fail":
+            fail(f"tight MRF envelope did not hard-fail preflight: {tight_gate!r}")
+        tight_fix = str(tight_gate[-1].get("fix", ""))
+        if "mrf_forward" not in tight_fix or "mrf_aft" in tight_fix:
+            fail(f"tight MRF remediation was not side-specific: {tight_fix!r}")
+
+        stable_dir = tmp / "stable_mrf_envelope"
+        stable_dir.mkdir()
+        stable_case = stable_dir / "stable_case.yaml"
+        stable_case.write_text(tight_text.replace("mrf_forward: 0.075", "mrf_forward: 0.08"), encoding="utf-8")
+        stable_output = run_cmd(
+            [sys.executable, "starccm_cli.py", "--project-dir", str(stable_dir), "workflow", "preflight", "--case", str(stable_case)],
+            expect=0,
+        ).stdout
+        if "Preflight: fail" in stable_output:
+            fail("validated directional MRF combination 0.08/0.075 was still rejected by preflight")
 
         for preset in ("quick", "coarse"):
             case = tmp / f"{preset}_case.yaml"
@@ -855,6 +1254,26 @@ def check_engine() -> None:
             ).stdout
             if "Preflight: warn" not in output and "Preflight: pass" not in output:
                 fail(f"{preset} preflight should pass or warn")
+            preflight = json.loads((tmp / "preflight_report.json").read_text(encoding="utf-8-sig"))
+            derived = preflight.get("derived", {})
+            required_derived = (
+                "diameter_m",
+                "length_m",
+                "mesh_preset",
+                "prism_mode",
+                "run_intent",
+                "Re_inflow_D",
+                "advance_coefficient_J",
+            )
+            missing_derived = [key for key in required_derived if derived.get(key) is None]
+            if missing_derived:
+                fail(f"preflight derived setup is incomplete: {missing_derived}")
+            iteration_checks = [
+                check for check in preflight.get("checks", [])
+                if check.get("id") == "solver_iterations"
+            ]
+            if not iteration_checks or iteration_checks[-1].get("level") != "pass":
+                fail(f"{preset} smoke-test pilot iterations should pass preflight")
 
         custom_case_dir = tmp / "blocked_custom_density"
         custom_case_dir.mkdir()
