@@ -104,6 +104,26 @@ Requirements:
 
 Note: a 400-step pilot is for workflow validation and preliminary screening only. It is not a formal engineering conclusion.
 
+## Test 4: Confirmed Safe Continuation
+
+Purpose: verify that AutoStar runs only the missing solver iterations and does not re-import, recreate domains, or remesh.
+
+Copy this into Codex:
+
+```text
+Continue with AutoStar and extend the existing 400-step case to 1000 total iterations.
+
+Requirements:
+1. Read solver.iterations_completed from project_state.json first.
+2. Read the mesh-quality gate, stability, and result reliability first. If mesh risk exists, explain it and wait for my confirmation; do not add --confirm-mesh-risk by default.
+3. Use workflow continue --to-iterations 1000; do not run workflow run again.
+4. Start with --dry-run and show the read-only plan. The plan must not contain geometry run, domain create, or mesh generate.
+5. Stop after the dry-run summary and wait for my confirmation before removing --dry-run.
+6. After the real continuation, update results, the canonical y+ report, the run report, and one cloud-image set.
+```
+
+`--to-iterations` is the absolute target. If the current count already meets or exceeds it, AutoStar must refuse to launch STAR-CCM+.
+
 ## Common Pitfalls
 
 - If Codex cannot see AutoStar right after installation: open a new Codex task/window, or restart Codex, so it can rescan `.codex/skills`.

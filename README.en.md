@@ -45,6 +45,7 @@ The current version can help users:
 - Check the local STAR-CCM+ environment and produce a preflight assessment before calculation.
 - Use `quick` or `coarse` meshes for workflow validation and preliminary CFD screening.
 - Run a 400-step pilot after user confirmation and assess residuals, thrust, torque, stability, and y+.
+- Continue to an explicitly confirmed total iteration target without repeating import, domain creation, or meshing.
 - Produce `preflight_report.md`, `run_report.md`, and JSON diagnostics.
 - Export four-view surface pressure/y+ images, center-plane pressure/velocity, mesh sections, and report contact sheets from solved cases.
 
@@ -88,7 +89,9 @@ A standard preview run normally produces:
 6. A usability level, known risks, and recommended next actions.
 7. Pressure, y+, section, and mesh images when a solved case is available.
 
-The 400-step pilot is primarily a direction, mesh, and obvious-divergence screen. The user decides whether to continue for more steps, revise the setup, or request additional postprocessing after reviewing the intermediate result.
+After each run, AutoStar lists direct links to the reports, JSON diagnostics, simulation file, and generated postprocessing images. If meshing, convergence, or cloud export has a problem, it still links the diagnostics that were produced and identifies the failed stage and next action.
+
+The 400-step pilot is primarily a direction, mesh, and obvious-divergence screen. AutoStar reports mesh generation separately from the mesh-quality gate and does not treat `mesh_success=true` as a quality pass; clear mesh risks should be repaired first. After the user confirms a higher total, AutoStar uses the dedicated continuation path to run only the missing iterations and refresh results. `--dry-run` first provides a read-only plan without writing project files or launching STAR-CCM+.
 
 ## Direction Inputs
 

@@ -104,6 +104,26 @@ pilot=400 steps
 
 注意：400-step pilot 只用于流程验证和初步筛查，不代表正式工程结论。
 
+## 测试 4：确认后安全续算
+
+用途：验证 AutoStar 只追加缺少的求解步数，不重新导入、建域或划网格。
+
+复制给 Codex：
+
+```text
+继续使用 AutoStar，把刚才已完成 400 步的算例续算到总计 1000 步。
+
+要求：
+1. 先读取 project_state.json 中的 solver.iterations_completed。
+2. 先读取网格质量门控、稳定性和结果可靠性；若网格存在风险，解释后停下来让我确认，不要默认添加 --confirm-mesh-risk。
+3. 使用 workflow continue --to-iterations 1000，不要重新运行 workflow run。
+4. 先用 --dry-run 展示只读计划；计划中不得出现 geometry run、domain create 或 mesh generate。
+5. dry-run 后先停下来汇报，得到我确认后再移除 --dry-run 正式续算。
+6. 正式续算完成后更新结果、统一 y+ 报告、总报告和一套云图。
+```
+
+`--to-iterations` 表示目标总步数。若当前已经达到或超过目标，AutoStar 应拒绝启动 STAR-CCM+。
+
 ## 常见卡点
 
 - 如果 Codex 当前任务刚安装完 AutoStar 但识别不到 skill：新开一个 Codex 任务/窗口，或重启 Codex，让它重新扫描 `.codex/skills`。

@@ -47,9 +47,23 @@ python ./starccm_cli.py --project-dir C:/runs/case1 workflow run --case C:/runs/
 
 当前 quick/coarse 结果用于流程验证和筛查。不要把 400 步结果当成最终工程结论。
 
-## 6. 后处理云图
+## 6. 用户确认后续算
 
-`workflow run` 或 `results extract/analyze` 成功后默认会尝试自动导出云图。若已有求解后的 `.sim`，也可以手动补导：
+400 步完成后先阅读稳定性、残差、网格质量门控和 y+ 风险。网格质量门控为 `fail` 时应优先修网格；当前结果仅作诊断，不应直接进入长算。网格无失败门控但结果可靠性仍为 `fail` 时，只在用户确认后诊断性续算到 1500，不直接建议 2500。
+
+没有网格质量阻塞时，用户明确确认目标总步数后，只续算缺少的步数：
+
+```powershell
+python ./starccm_cli.py --project-dir C:/runs/case1 workflow continue --case C:/runs/case1/case.yaml --to-iterations 1500 --confirmed-execution
+```
+
+`--to-iterations` 是总步数，不是追加步数。目标必须大于 `project_state.json` 中的 `solver.iterations_completed`；续算不会重新导入 STEP、建域或划网格。可先加 `--dry-run` 查看只读计划，该模式不会写文件或启动 STAR-CCM+。
+
+如果用户已阅读网格报告并明确要求在风险网格上做诊断性长算，命令还需添加 `--confirm-mesh-risk`。该参数只表示用户接受本次诊断风险，不会把网格质量状态改成通过。
+
+## 7. 后处理云图
+
+顶层工作流成功后只自动导出一次云图。若已有求解后的 `.sim`，也可以手动补导：
 
 ```powershell
 python ./starccm_cli.py --project-dir C:/runs/case1 postprocess clouds --case C:/runs/case1/case.yaml
