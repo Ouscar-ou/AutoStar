@@ -133,8 +133,24 @@ See [`LICENSE`](LICENSE) and [`LICENSE.md`](LICENSE.md) for the complete terms.
 
 STAR-CCM+ is a Siemens commercial software product and trademark. AutoStar is not an official Siemens product, does not include STAR-CCM+ software or licensing, and does not replace Siemens licensing requirements.
 
-## Feedback
+## Contact, Discussion, and Collaboration
 
-Use [GitHub Issues](https://github.com/Ouscar-ou/AutoStar/issues) for general feedback. Include the STAR-CCM+ and Windows versions, `version` output, sanitized operating conditions, relevant reports, and key error logs when possible.
+Welcome to AutoStar. We also welcome discussion and collaboration around STAR-CCM+ workflows, propeller CFD, feature improvements, the continued expansion and integration of diverse capabilities, and practical applications.
+
+- **Bug reports and feature requests**: [GitHub Issues](https://github.com/Ouscar-ou/AutoStar/issues)<br>
+  Use Issues to report bugs, propose features, or ask about installation, environment configuration, and workflow problems.
+
+- **Technical discussions and community collaboration**: [GitHub Discussions](https://github.com/Ouscar-ou/AutoStar/discussions)<br>
+  Use Discussions for technical exchange, usage experience, case studies, workflow extensions, and community collaboration.
+
+- **Email**:<br>
+  [seagoou@gmail.com](mailto:seagoou@gmail.com)<br>
+  [1664721113@qq.com](mailto:1664721113@qq.com)<br>
+  For business inquiries, project collaboration, or matters that should not be discussed in a public Issue.
+
+- **QQ group**: `1062619533`<br>
+  Join the group to discuss AutoStar usage, STAR-CCM+ workflows, and propeller CFD.
+
+When reporting a problem, please include the AutoStar version, STAR-CCM+ version, operating system, selected mesh preset, and sanitized logs or reports. Do not publicly upload confidential data, license information, private keys, or geometry that you are not authorized to share.
 
 Submit security concerns privately through [GitHub Private Vulnerability Reporting](https://github.com/Ouscar-ou/AutoStar/security/advisories/new).
